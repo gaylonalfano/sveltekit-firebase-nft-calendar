@@ -2,7 +2,42 @@
 	import { DaysStore } from '$lib/stores/days';
 	import Header from '$lib/components/Header.svelte';
 
-	const selectedDay = $DaysStore.find((day) => day.isSelected);
+	// Q: Do I need this to be reactive or just a variable?
+	// A: MUST be reactive! Simple variable won't react/update!
+	$: selectedDay = $DaysStore.find((day) => day.isSelected); // Works
+	// let selectedDay = $DaysStore.find((day) => day.isSelected); // Doesn't update!
+
+	function updateSelectedDay() {
+		// console.log('Clicked!', e); // e.target is either <button> or <time>
+		// console.log(this); // <button>
+		// console.log(this.children); // HTMLCollection(2)
+		// console.log(this.children[0].dateTime); // 2022-01-29
+		// console.log(e.target.dateTime);
+		const selectedDate = this.children[0].dateTime;
+
+		// Q: How should I update the Store?
+		// A: Need to use update() method directly on Store!
+		// DON'T use $DaysStore.update()! Need to use DaysStore.update()!
+		// https://stackoverflow.com/a/70008086
+		DaysStore.update((day) => {
+			// Change previous isSelected to false
+			$DaysStore.find((d) => d.isSelected).isSelected = false;
+			// Update the clicked date to be the new isSelected
+			$DaysStore.find((d) => d.date === selectedDate).isSelected = true;
+			return $DaysStore;
+		});
+
+		// ERROR! This DOESN'T update Store!
+		//let previousSelectedDay = $DaysStore.find((day) => day.isSelected);
+		// console.log($DaysStore); // (42) [{},{},...]
+		//previousSelectedDay.isSelected = false;
+		//console.log('previousSelectedDay', previousSelectedDay);
+		//let updatedSelectedDay = $DaysStore.find((day) => day.date === date);
+		// updatedSelectedDay.isSelected = true;
+		//console.log('updatedSelectedDay', updatedSelectedDay);
+	}
+
+	$: console.log('selectedDay', selectedDay);
 </script>
 
 <h1 class="text-3xl underline text-center py-4">NFT Mint Calendar: {selectedDay.date}</h1>
@@ -89,6 +124,7 @@
 						class:text-indigo-600={!day.isSelected && day.isToday}
 						class:text-gray-900={!day.isSelected && day.isCurrentMonth && !day.isToday}
 						class:text-gray-500={!day.isSelected && !day.isCurrentMonth && !day.isToday}
+						on:click={updateSelectedDay}
 					>
 						<!--
 						Always include: "ml-auto"

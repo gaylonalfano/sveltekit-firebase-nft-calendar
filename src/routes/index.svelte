@@ -92,10 +92,10 @@
 											>
 										</a>
 									</li>
-									{#if day.events.length > 2}
-										<li class="text-gray-500">+ {day.events.length - 2} more</li>
-									{/if}
 								{/each}
+								{#if day.events.length > 2}
+									<li class="text-gray-500">+ {day.events.length - 2} more</li>
+								{/if}
 							</ol>
 						{/if}
 					</div>

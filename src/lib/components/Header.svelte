@@ -1,3 +1,7 @@
+<script>
+	import AddEventModal from '$lib/components/AddEventModal.svelte';
+</script>
+
 <header
 	class="relative z-20 flex items-center justify-between border-b border-gray-200 py-4 px-6 lg:flex-none"
 >
@@ -130,11 +134,7 @@
 				</div>
 			</div>
 			<div class="ml-6 h-6 w-px bg-gray-300" />
-			<button
-				type="button"
-				class="focus:outline-none ml-6 rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-				>Add event</button
-			>
+			<AddEventModal />
 		</div>
 		<div class="relative ml-6 md:hidden">
 			<button

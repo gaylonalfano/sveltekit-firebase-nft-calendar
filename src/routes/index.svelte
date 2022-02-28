@@ -1,11 +1,11 @@
 <script>
-	import { DaysStore } from '$lib/stores/days';
+	import { days, selectedDayStore } from '$lib/stores';
 	import Header from '$lib/components/Header.svelte';
 
 	// Q: Do I need this to be reactive or just a variable?
 	// A: MUST be reactive! Simple variable won't react/update!
-	$: selectedDay = $DaysStore.find((day) => day.isSelected); // Works
-	// let selectedDay = $DaysStore.find((day) => day.isSelected); // Doesn't update!
+	// $: selectedDay = $days.find((day) => day.isSelected); // Works
+	// let selectedDay = $days.find((day) => day.isSelected); // Doesn't update!
 
 	function updateSelectedDay() {
 		// console.log('Clicked!', e); // e.target is either <button> or <time>
@@ -15,35 +15,50 @@
 		// console.log(e.target.dateTime);
 		const selectedDate = this.children[0].dateTime;
 
-		// Q: How should I update the Store?
+		// === Q: How should I update the Store? Do I use update() or set()?
+		// Using update() doesn't seem to update PERMANENTLY
 		// A: Need to use update() method directly on Store!
-		// DON'T use $DaysStore.update()! Need to use DaysStore.update()!
+		// DON'T use $days.update()! Need to use days.update()!
 		// https://stackoverflow.com/a/70008086
-		DaysStore.update((day) => {
+		// = Attempt 1: Seems like update() isn't permanentally saving...
+		// days.update((currentStore) => {
+		// 	// Change previous isSelected to false
+		// 	currentStore.find((day) => day.isSelected).isSelected = false;
+		// 	// Update the clicked date to be the new isSelected
+		// 	currentStore.find((day) => day.date === selectedDate).isSelected = true;
+		// 	return currentStore;
+		// });
+		// = Attempt 2:
+		days.update(($days) => {
 			// Change previous isSelected to false
-			$DaysStore.find((d) => d.isSelected).isSelected = false;
+			$days.find((day) => day.isSelected).isSelected = false;
 			// Update the clicked date to be the new isSelected
-			$DaysStore.find((d) => d.date === selectedDate).isSelected = true;
-			return $DaysStore;
+			$days.find((day) => day.date === selectedDate).isSelected = true;
+			return $days;
 		});
 
 		// ERROR! This DOESN'T update Store!
-		//let previousSelectedDay = $DaysStore.find((day) => day.isSelected);
-		// console.log($DaysStore); // (42) [{},{},...]
+		//let previousSelectedDay = $days.find((day) => day.isSelected);
+		// console.log($days); // (42) [{},{},...]
 		//previousSelectedDay.isSelected = false;
 		//console.log('previousSelectedDay', previousSelectedDay);
-		//let updatedSelectedDay = $DaysStore.find((day) => day.date === date);
+		//let updatedSelectedDay = $days.find((day) => day.date === date);
 		// updatedSelectedDay.isSelected = true;
 		//console.log('updatedSelectedDay', updatedSelectedDay);
 	}
 
-	$: console.log('selectedDay', selectedDay);
+	// $: console.log('selectedDay', selectedDay);
 </script>
 
-<h1 class="text-3xl underline text-center py-4">NFT Mint Calendar: {selectedDay.date}</h1>
+<h1 class="text-3xl underline text-center py-4">NFT Mint Calendar: {$selectedDayStore.date}</h1>
 
 <!-- This example requires Tailwind CSS v2.0+ -->
 <div class="lg:flex lg:h-full lg:flex-col">
+	<div>
+		<pre>
+				{JSON.stringify($selectedDayStore, null, 4)}
+			</pre>
+	</div>
 	<Header />
 	<div class="shadow ring-1 ring-black ring-opacity-5 lg:flex lg:flex-auto lg:flex-col">
 		<div
@@ -60,7 +75,7 @@
 		<div class="flex bg-gray-200 text-xs leading-6 text-gray-700 lg:flex-auto">
 			<div class="hidden w-full lg:grid lg:grid-cols-7 lg:grid-rows-6 lg:gap-px">
 				<!-- LOOP OVER DAYS -->
-				{#each $DaysStore as day (day.date)}
+				{#each $days as day (day.date)}
 					<!-- Q: How to add conditional class AND fixed (ie relative)? -->
 					<!-- Svelte doesn't have the Array syntax like Vue -->
 					<div
@@ -103,7 +118,7 @@
 			</div>
 			<!-- SMALL/MED SCREEN ONLY wraps each day in a button -->
 			<div class="isolate grid w-full grid-cols-7 grid-rows-6 gap-px lg:hidden">
-				{#each $DaysStore as day (day.date)}
+				{#each $days as day (day.date)}
 					<!--
 					Always include: "flex h-14 flex-col py-2 px-3 hover:bg-gray-100 focus:z-10"
 					Is current month, include: "bg-white"
@@ -155,12 +170,12 @@
 			</div>
 		</div>
 	</div>
-	{#if selectedDay?.events.length > 0}
+	{#if $selectedDayStore?.events.length > 0}
 		<div class="py-10 px-4 sm:px-6 lg:hidden">
 			<ol
 				class="divide-y divide-gray-100 overflow-hidden rounded-lg bg-white text-sm shadow ring-1 ring-black ring-opacity-5"
 			>
-				{#each selectedDay.events as event (event.id)}
+				{#each $selectedDayStore.events as event (event.id)}
 					<li class="group flex p-4 pr-6 focus-within:bg-gray-50 hover:bg-gray-50">
 						<div class="flex-auto">
 							<p class="font-semibold text-gray-900">{event.name}</p>

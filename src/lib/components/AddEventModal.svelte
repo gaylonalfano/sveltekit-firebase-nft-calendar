@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { DaysStore } from '$lib/stores/days';
+	import { days } from '$lib/stores';
 
-	$: selectedDay = $DaysStore.find((day) => day.isSelected);
+	$: selectedDay = $days.find((day) => day.isSelected);
 
 	interface Event {
 		id: number;
@@ -32,11 +32,12 @@
 			href: '#'
 		};
 
-		// Update our DaysStore
-		DaysStore.update((day) => {
+		// Update our days
+		days.update((day) => {
 			// Need to find isSelected and update its events array
-			$DaysStore.find((day) => day.isSelected).events.push(newEvent);
-			return $DaysStore;
+			$days.find((day) => day.isSelected).events.push(newEvent);
+			// Don't forget to return the updated Store!
+			return $days;
 		});
 	}
 </script>

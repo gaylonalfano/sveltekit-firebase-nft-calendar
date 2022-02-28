@@ -1,6 +1,6 @@
-import { writable } from 'svelte/store';
+import { writable, derived, readable } from 'svelte/store';
 
-export const DaysStore = writable([
+export const days = writable([
 	{ date: '2021-12-27', events: [] },
 	{ date: '2021-12-28', events: [] },
 	{ date: '2021-12-29', events: [] },
@@ -83,3 +83,5 @@ export const DaysStore = writable([
 	{ date: '2022-02-05', events: [] },
 	{ date: '2022-02-06', events: [] }
 ]);
+
+export const selectedDayStore = derived(days, ($days) => $days.find((day) => day.isSelected));

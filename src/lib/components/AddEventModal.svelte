@@ -11,34 +11,69 @@
 		href: string;
 	}
 
-	const formValues = {
+	let formValues = {
 		name: '',
 		hour: '',
 		min: '',
 		timezone: ''
 	};
 
+	let message = '';
+	let formIsValid = false;
+
+	function handleFormValidation() {
+		if (
+			formValues.name.trim().length === 0 ||
+			formValues.hour.trim().length === 0 ||
+			formValues.min.trim().length === 0 ||
+			formValues.timezone.trim().length === 0
+		) {
+			message = 'Please input event details';
+			console.log(message);
+			formIsValid = false;
+		} else {
+			message = null;
+			formIsValid = true;
+		}
+	}
+
 	function handleSubmit() {
 		// Q: The Daisy Modal uses a label for the button
 		// Not sure how to add a <button> for form submit w/o
 		// losing the toggle modal functionality.
 		console.log(formValues);
-		const newEvent = {
-			...formValues,
-			id: Math.floor(Math.random() * 1000),
-			name: formValues.name,
-			time: `${formValues.hour}${formValues.min}`,
-			datetime: `${selectedDay.date}T${formValues.hour}:${formValues.min}`, // 	'2022-01-25T14:00'
-			href: '#'
-		};
 
-		// Update our days
-		days.update((day) => {
-			// Need to find isSelected and update its events array
-			$days.find((day) => day.isSelected).events.push(newEvent);
-			// Don't forget to return the updated Store!
-			return $days;
-		});
+		// Add some basic validation
+		handleFormValidation();
+
+		if (formIsValid) {
+			const newEvent = {
+				...formValues,
+				id: Math.floor(Math.random() * 1000),
+				name: formValues.name,
+				time: `${formValues.hour}${formValues.min}`,
+				datetime: `${selectedDay.date}T${formValues.hour}:${formValues.min}`, // 	'2022-01-25T14:00'
+				href: '#'
+			};
+
+			// Update our days
+			// Q: Do where exactly do I use '$' on Store?
+			days.update((day) => {
+				// Need to find isSelected and update its events array
+				$days.find((day) => day.isSelected).events.push(newEvent);
+				// Don't forget to return the updated Store!
+				return $days;
+			});
+
+			// Reset form and formValues
+			document.querySelector('form').reset();
+			formValues = {
+				name: '',
+				hour: '',
+				min: '',
+				timezone: ''
+			};
+		}
 	}
 </script>
 
@@ -124,6 +159,26 @@
 				<option value="PST">PST</option>
 				<option value="EST">EST</option>
 			</select>
+
+			{#if message}
+				<div class="alert shadow-lg alert-warning modal-action">
+					<div>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							class="stroke-current flex-shrink-0 h-6 w-6"
+							fill="none"
+							viewBox="0 0 24 24"
+							><path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								stroke-width="2"
+								d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+							/></svg
+						>
+						<span>Warning: Invalid email address!</span>
+					</div>
+				</div>
+			{/if}
 
 			<div class="modal-action">
 				<!-- <button type="submit" on:submit={handleSubmit} class="btn btn-accent">Add Event</button> -->

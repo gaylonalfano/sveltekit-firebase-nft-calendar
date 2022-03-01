@@ -4,6 +4,8 @@
 
 	// Q: Do I need this to be reactive or just a variable?
 	// A: MUST be reactive! Simple variable won't react/update!
+	// UPDATE: Converted selectedDay into a derived Store since it's
+	// used across multiple components.
 	// $: selectedDay = $days.find((day) => day.isSelected); // Works
 	// let selectedDay = $days.find((day) => day.isSelected); // Doesn't update!
 
@@ -16,7 +18,8 @@
 		const selectedDate = this.children[0].dateTime;
 
 		// === Q: How should I update the Store? Do I use update() or set()?
-		// Using update() doesn't seem to update PERMANENTLY
+		// Using update() doesn't seem to update PERMANENTLY, but I don't
+		// think that's Store's functionality
 		// A: Need to use update() method directly on Store!
 		// DON'T use $days.update()! Need to use days.update()!
 		// https://stackoverflow.com/a/70008086
@@ -36,15 +39,6 @@
 			$days.find((day) => day.date === selectedDate).isSelected = true;
 			return $days;
 		});
-
-		// ERROR! This DOESN'T update Store!
-		//let previousSelectedDay = $days.find((day) => day.isSelected);
-		// console.log($days); // (42) [{},{},...]
-		//previousSelectedDay.isSelected = false;
-		//console.log('previousSelectedDay', previousSelectedDay);
-		//let updatedSelectedDay = $days.find((day) => day.date === date);
-		// updatedSelectedDay.isSelected = true;
-		//console.log('updatedSelectedDay', updatedSelectedDay);
 	}
 
 	// $: console.log('selectedDay', selectedDay);
@@ -54,12 +48,13 @@
 
 <!-- This example requires Tailwind CSS v2.0+ -->
 <div class="lg:flex lg:h-full lg:flex-col">
+	<Header />
 	<div>
 		<pre>
-				{JSON.stringify($selectedDayStore, null, 4)}
-			</pre>
+			{JSON.stringify($selectedDayStore, null, 2)}
+		</pre>
 	</div>
-	<Header />
+
 	<div class="shadow ring-1 ring-black ring-opacity-5 lg:flex lg:flex-auto lg:flex-col">
 		<div
 			class="grid grid-cols-7 gap-px border-b border-gray-300 bg-gray-200 text-center text-xs font-semibold leading-6 text-gray-700 lg:flex-none"

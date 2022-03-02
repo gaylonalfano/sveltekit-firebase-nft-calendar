@@ -49,12 +49,6 @@
 <!-- This example requires Tailwind CSS v2.0+ -->
 <div class="lg:flex lg:h-full lg:flex-col">
 	<Header />
-	<div>
-		<pre>
-			{JSON.stringify($selectedDayStore, null, 2)}
-		</pre>
-	</div>
-
 	<div class="shadow ring-1 ring-black ring-opacity-5 lg:flex lg:flex-auto lg:flex-col">
 		<div
 			class="grid grid-cols-7 gap-px border-b border-gray-300 bg-gray-200 text-center text-xs font-semibold leading-6 text-gray-700 lg:flex-none"

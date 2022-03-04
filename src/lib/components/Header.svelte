@@ -1,19 +1,25 @@
 <script>
-	import AddEventModal from '$lib/components/AddEventModal.svelte';
+	import AddEventForm from '$lib/components/AddEventForm.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import Component1 from '$lib/components/Component1.svelte';
 	import Component2 from '$lib/components/Component2.svelte';
+	import { showModalStore } from '$lib/stores';
 
 	// Initialize modal state and content
-	let showModal = false;
+	// let showModal = false;
 	let modalContent;
 
 	// NOTE Following this Svelte Modal example:
 	// https://svelte.dev/repl/4624e3f0f3684ddcb2e2da10592f6df1?version=3.38.2
 	function toggleModal(component) {
 		modalContent = component;
-		showModal = !showModal;
+		// Using a local showModal:
+		// showModal = !showModal;
+		// Using a store showModal:
+		$showModalStore = !$showModalStore;
 	}
+
+	$: console.log('showModalStore?', $showModalStore);
 </script>
 
 <header
@@ -152,9 +158,10 @@
 			<!--<label for="add-event-modal" class="btn modal-button">Add Event</label>-->
 			<!-- Put this part before </body> tag -->
 			<!--		<input type="checkbox" id="add-event-modal" class="modal-toggle" /> -->
-			<button on:click={() => toggleModal(Component1)}>Open 1</button>
-			<button on:click={() => toggleModal(Component2)}>Open 2</button>
-			{#if showModal}
+			<!-- NOTE Had to tweak the default DaisyUI to use the dynamic Modal -->
+			<!-- NOTE This means I swapped for a button and created a showModalStore -->
+			<button on:click={() => toggleModal(AddEventForm)} class="btn">Add Event</button>
+			{#if $showModalStore}
 				<Modal on:click={toggleModal} {modalContent} />
 			{/if}
 		</div>

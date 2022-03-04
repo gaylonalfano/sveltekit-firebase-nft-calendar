@@ -84,4 +84,6 @@ export const days = writable([
 	{ date: '2022-02-06', events: [] }
 ]);
 
+export const showModalStore = writable(false);
+
 export const selectedDayStore = derived(days, ($days) => $days.find((day) => day.isSelected));

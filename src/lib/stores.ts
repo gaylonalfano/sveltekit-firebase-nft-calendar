@@ -1,4 +1,4 @@
-import { writable, derived, readable } from 'svelte/store';
+import { writable, derived } from 'svelte/store';
 
 export const days = writable([
 	{ date: '2021-12-27', events: [] },

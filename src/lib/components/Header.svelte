@@ -1,5 +1,19 @@
 <script>
 	import AddEventModal from '$lib/components/AddEventModal.svelte';
+	import Modal from '$lib/components/Modal.svelte';
+	import Component1 from '$lib/components/Component1.svelte';
+	import Component2 from '$lib/components/Component2.svelte';
+
+	// Initialize modal state and content
+	let showModal = false;
+	let modalContent;
+
+	// NOTE Following this Svelte Modal example:
+	// https://svelte.dev/repl/4624e3f0f3684ddcb2e2da10592f6df1?version=3.38.2
+	function toggleModal(component) {
+		modalContent = component;
+		showModal = !showModal;
+	}
 </script>
 
 <header
@@ -134,7 +148,15 @@
 				</div>
 			</div>
 			<div class="ml-6 h-6 w-px bg-gray-300" />
-			<AddEventModal />
+			<!-- The button to open modal -->
+			<!--<label for="add-event-modal" class="btn modal-button">Add Event</label>-->
+			<!-- Put this part before </body> tag -->
+			<!--		<input type="checkbox" id="add-event-modal" class="modal-toggle" /> -->
+			<button on:click={() => toggleModal(Component1)}>Open 1</button>
+			<button on:click={() => toggleModal(Component2)}>Open 2</button>
+			{#if showModal}
+				<Modal on:click={toggleModal} {modalContent} />
+			{/if}
 		</div>
 		<div class="relative ml-6 md:hidden">
 			<button

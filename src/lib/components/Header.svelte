@@ -5,6 +5,8 @@
 	import Component2 from '$lib/components/Component2.svelte';
 	import { showModalStore } from '$lib/stores';
 
+	let showMenu = false;
+
 	// Initialize modal state and content
 	// let showModal = false;
 	let modalContent;
@@ -173,6 +175,7 @@
 				id="menu-0-button"
 				aria-expanded="false"
 				aria-haspopup="true"
+				on:click={() => (showMenu = !showMenu)}
 			>
 				<!-- MenuButton -->
 				<span class="sr-only">Open menu</span>
@@ -202,6 +205,7 @@
         -->
 			<div
 				class="focus:outline-none absolute right-0 mt-3 w-36 origin-top-right divide-y divide-gray-100 overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5"
+				class:hidden={showMenu === false}
 				role="menu"
 				aria-orientation="vertical"
 				aria-labelledby="menu-0-button"

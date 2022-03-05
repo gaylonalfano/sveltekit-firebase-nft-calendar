@@ -166,6 +166,7 @@
 			{/if}
 		</div>
 		<div class="relative ml-6 md:hidden">
+			<!-- Menu Component -->
 			<button
 				type="button"
 				class="-mx-2 flex items-center rounded-full border border-transparent p-2 text-gray-400 hover:text-gray-500"
@@ -173,6 +174,7 @@
 				aria-expanded="false"
 				aria-haspopup="true"
 			>
+				<!-- MenuButton -->
 				<span class="sr-only">Open menu</span>
 				<!-- Heroicon name: solid/dots-horizontal -->
 				<svg
@@ -205,15 +207,20 @@
 				aria-labelledby="menu-0-button"
 				tabindex="-1"
 			>
+				<!-- MenuItems Component -->
 				<div class="py-1" role="none">
+					<!-- MenuItem Component -->
 					<!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
 					<a
-						href="#"
-						class="text-gray-700 block px-4 py-2 text-sm"
+						on:click={() => toggleModal(AddEventForm)}
+						class="text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100 hover:text-gray-900"
 						role="menuitem"
 						tabindex="-1"
 						id="menu-0-item-0">Create event</a
 					>
+					{#if $showModalStore}
+						<Modal on:click={toggleModal} {modalContent} />
+					{/if}
 				</div>
 				<div class="py-1" role="none">
 					<a

@@ -88,9 +88,9 @@ export const showModalStore = writable(false);
 
 export const selectedDayStore = derived(days, ($days) => $days.find((day) => day.isSelected));
 
-export const menuItemsStore = readable([
-	{ id: '0', name: 'Day view', href: '#' },
-	{ id: '1', name: 'Week view', href: '#' },
-	{ id: '2', name: 'Month view', href: '#' },
-	{ id: '3', name: 'Month view', href: '#' }
+export const menuItemsStore = writable([
+	{ id: '0', name: 'Day view', href: '#', active: false },
+	{ id: '1', name: 'Week view', href: '#', active: true },
+	{ id: '2', name: 'Month view', href: '#', active: false },
+	{ id: '3', name: 'Year view', href: '#', active: false }
 ]);

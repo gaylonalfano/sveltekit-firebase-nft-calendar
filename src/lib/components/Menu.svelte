@@ -2,7 +2,15 @@
 	import MenuItems from './MenuItems.svelte';
 </script>
 
-<div class="relative">
+<div class="dropdown">
+	<label tabindex="0" class="btn m-1">Click</label>
+	<ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+		<li><a>Item 1</a></li>
+		<li><a>Item 2</a></li>
+	</ul>
+</div>
+
+<div class="relative menu">
 	<!-- Menu Component -->
 	<button
 		type="button"
@@ -29,5 +37,9 @@
 		</svg>
 	</button>
 	<!-- MenuItems Component -->
-	<MenuItems />
+	<ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+		{#each $menuItemsStore as item (item.id)}
+			<li><a>{item.name}</a></li>
+		{/each}
+	</ul>
 </div>

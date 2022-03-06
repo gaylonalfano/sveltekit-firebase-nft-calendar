@@ -81,6 +81,7 @@
 		</div>
 		<div class="hidden md:ml-4 md:flex md:items-center">
 			<div class="relative">
+				<!-- Menu Component -->
 				<button
 					type="button"
 					class="flex items-center rounded-md border border-gray-300 bg-white py-2 pl-3 pr-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50"
@@ -88,6 +89,7 @@
 					aria-expanded="false"
 					aria-haspopup="true"
 				>
+					<!-- MenuButton Component -->
 					Month view
 					<!-- Heroicon name: solid/chevron-down -->
 					<svg
@@ -122,6 +124,7 @@
 					aria-labelledby="menu-button"
 					tabindex="-1"
 				>
+					<!-- MenuItems Component -->
 					<div class="py-1" role="none">
 						<!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
 						<a
@@ -131,6 +134,7 @@
 							tabindex="-1"
 							id="menu-item-0">Day view</a
 						>
+						<!-- MenuItem Component (wrapped around <a> tag) -->
 						<a
 							href="#"
 							class="text-gray-700 block px-4 py-2 text-sm"
@@ -155,6 +159,7 @@
 					</div>
 				</div>
 			</div>
+			<!-- END of Menu Component -->
 			<div class="ml-6 h-6 w-px bg-gray-300" />
 			<!-- The button to open modal -->
 			<!--<label for="add-event-modal" class="btn modal-button">Add Event</label>-->
@@ -166,106 +171,6 @@
 			{#if $showModalStore}
 				<Modal on:click={toggleModal} {modalContent} />
 			{/if}
-		</div>
-		<div class="relative ml-6 md:hidden">
-			<!-- Menu Component -->
-			<button
-				type="button"
-				class="-mx-2 flex items-center rounded-full border border-transparent p-2 text-gray-400 hover:text-gray-500"
-				id="menu-0-button"
-				aria-expanded="false"
-				aria-haspopup="true"
-				on:click={() => (showMenu = !showMenu)}
-			>
-				<!-- MenuButton -->
-				<span class="sr-only">Open menu</span>
-				<!-- Heroicon name: solid/dots-horizontal -->
-				<svg
-					class="h-5 w-5"
-					xmlns="http://www.w3.org/2000/svg"
-					viewBox="0 0 20 20"
-					fill="currentColor"
-					aria-hidden="true"
-				>
-					<path
-						d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"
-					/>
-				</svg>
-			</button>
-
-			<!--
-          Dropdown menu, show/hide based on menu state.
-
-          Entering: "transition ease-out duration-100"
-            From: "transform opacity-0 scale-95"
-            To: "transform opacity-100 scale-100"
-          Leaving: "transition ease-in duration-75"
-            From: "transform opacity-100 scale-100"
-            To: "transform opacity-0 scale-95"
-        -->
-			<div
-				class="focus:outline-none absolute right-0 mt-3 w-36 origin-top-right divide-y divide-gray-100 overflow-hidden rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5"
-				class:hidden={showMenu === false}
-				role="menu"
-				aria-orientation="vertical"
-				aria-labelledby="menu-0-button"
-				tabindex="-1"
-			>
-				<!-- MenuItems Component -->
-				<div class="py-1" role="none">
-					<!-- MenuItem Component -->
-					<!-- Active: "bg-gray-100 text-gray-900", Not Active: "text-gray-700" -->
-					<a
-						on:click={() => toggleModal(AddEventForm)}
-						class="text-gray-700 block px-4 py-2 text-sm cursor-pointer hover:bg-gray-100 hover:text-gray-900"
-						role="menuitem"
-						tabindex="-1"
-						id="menu-0-item-0">Create event</a
-					>
-					{#if $showModalStore}
-						<Modal on:click={toggleModal} {modalContent} />
-					{/if}
-				</div>
-				<div class="py-1" role="none">
-					<a
-						href="#"
-						class="text-gray-700 block px-4 py-2 text-sm"
-						role="menuitem"
-						tabindex="-1"
-						id="menu-0-item-1">Go to today</a
-					>
-				</div>
-				<div class="py-1" role="none">
-					<a
-						href="#"
-						class="text-gray-700 block px-4 py-2 text-sm"
-						role="menuitem"
-						tabindex="-1"
-						id="menu-0-item-2">Day view</a
-					>
-					<a
-						href="#"
-						class="text-gray-700 block px-4 py-2 text-sm"
-						role="menuitem"
-						tabindex="-1"
-						id="menu-0-item-3">Week view</a
-					>
-					<a
-						href="#"
-						class="text-gray-700 block px-4 py-2 text-sm"
-						role="menuitem"
-						tabindex="-1"
-						id="menu-0-item-4">Month view</a
-					>
-					<a
-						href="#"
-						class="text-gray-700 block px-4 py-2 text-sm"
-						role="menuitem"
-						tabindex="-1"
-						id="menu-0-item-5">Year view</a
-					>
-				</div>
-			</div>
 		</div>
 	</div>
 </header>

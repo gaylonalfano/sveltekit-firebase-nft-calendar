@@ -1,4 +1,4 @@
-import { writable, derived } from 'svelte/store';
+import { writable, derived, readable } from 'svelte/store';
 
 export const days = writable([
 	{ date: '2021-12-27', events: [] },
@@ -87,3 +87,10 @@ export const days = writable([
 export const showModalStore = writable(false);
 
 export const selectedDayStore = derived(days, ($days) => $days.find((day) => day.isSelected));
+
+export const menuItemsStore = readable([
+	{ id: '0', name: 'Day view', href: '#' },
+	{ id: '1', name: 'Week view', href: '#' },
+	{ id: '2', name: 'Month view', href: '#' },
+	{ id: '3', name: 'Month view', href: '#' }
+]);

@@ -47,11 +47,11 @@
 <h1 class="text-3xl underline text-center py-4">NFT Mint Calendar: {$selectedDayStore.date}</h1>
 
 <!-- This example requires Tailwind CSS v2.0+ -->
-<div class="lg:flex lg:h-full lg:flex-col">
+<div class="max-w-screen-xl min-w-screen-sm">
 	<Header />
-	<div class="shadow ring-1 ring-black ring-opacity-5 lg:flex lg:flex-auto lg:flex-col">
+	<div class="shadow ring-1 ring-black ring-opacity-5">
 		<div
-			class="grid grid-cols-7 gap-px border-b border-gray-300 bg-gray-200 text-center text-xs font-semibold leading-6 text-gray-700 lg:flex-none"
+			class="grid grid-cols-7 gap-px border-b border-gray-300 bg-gray-200 text-center text-xs font-semibold leading-6 text-gray-700"
 		>
 			<div class="bg-white py-2">M<span class="sr-only sm:not-sr-only">on</span></div>
 			<div class="bg-white py-2">T<span class="sr-only sm:not-sr-only">ue</span></div>
@@ -62,51 +62,8 @@
 			<div class="bg-white py-2">S<span class="sr-only sm:not-sr-only">un</span></div>
 		</div>
 		<div class="flex bg-gray-200 text-xs leading-6 text-gray-700 lg:flex-auto">
-			<div class="hidden w-full lg:grid lg:grid-cols-7 lg:grid-rows-6 lg:gap-px">
-				<!-- LOOP OVER DAYS -->
-				{#each $days as day (day.date)}
-					<!-- Q: How to add conditional class AND fixed (ie relative)? -->
-					<!-- Svelte doesn't have the Array syntax like Vue -->
-					<div
-						class="relative py-2 px-3"
-						class:bg-white={day.isCurrentMonth}
-						class:bg-gray-50={!day.isCurrentMonth}
-						class:text-gray-500={!day.isCurrentMonth}
-					>
-						<time
-							datetime={day.date}
-							class={day.isToday
-								? 'flex h-6 w-6 items-center justify-center rounded-full bg-indigo-600 font-semibold text-white'
-								: undefined}>{day.date.split('-').pop().replace(/^0/, '')}</time
-						>
-						{#if day.events.length > 0}
-							<ol class="mt-2">
-								{#each day.events.slice(0, 2) as event (event.id)}
-									<li>
-										<a href={event.href} class="group flex">
-											<p
-												class="flex-auto truncate font-medium text-gray-900 group-hover:text-indigo-600"
-											>
-												{event.name}
-											</p>
-											<time
-												datetime={event.datetime}
-												class="ml-3 hidden flex-none text-gray-500 group-hover:text-indigo-600 xl:block"
-												>{event.time}</time
-											>
-										</a>
-									</li>
-								{/each}
-								{#if day.events.length > 2}
-									<li class="text-gray-500">+ {day.events.length - 2} more</li>
-								{/if}
-							</ol>
-						{/if}
-					</div>
-				{/each}
-			</div>
 			<!-- SMALL/MED SCREEN ONLY wraps each day in a button -->
-			<div class="isolate grid w-full grid-cols-7 grid-rows-6 gap-px lg:hidden">
+			<div class="isolate grid w-full grid-cols-7 grid-rows-6 gap-px">
 				{#each $days as day (day.date)}
 					<!--
 					Always include: "flex h-14 flex-col py-2 px-3 hover:bg-gray-100 focus:z-10"
@@ -160,7 +117,7 @@
 		</div>
 	</div>
 	{#if $selectedDayStore?.events.length > 0}
-		<div class="py-10 px-4 sm:px-6 lg:hidden">
+		<div class="py-10 px-4 sm:px-6">
 			<ol
 				class="divide-y divide-gray-100 overflow-hidden rounded-lg bg-white text-sm shadow ring-1 ring-black ring-opacity-5"
 			>

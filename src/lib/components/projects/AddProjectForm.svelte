@@ -4,11 +4,19 @@
 	// Can create a local reactive variable or use a store...
 	// $: selectedDay = $days.find((day) => day.isSelected);
 
-	interface Event {
+	interface Project {
 		id: number;
 		name: string;
 		time: string;
 		datetime: string;
+		timezone: string;
+		discord: string;
+		twitter: string;
+		website: string;
+		supply: string;
+		coin: string;
+		price: string;
+		details: string;
 		href: string;
 	}
 
@@ -16,21 +24,42 @@
 		name: '',
 		hour: '',
 		min: '',
-		timezone: ''
+		timezone: '',
+		discord: '',
+		twitter: '',
+		website: '',
+		supply: '',
+		coin: '',
+		price: '',
+		details: ''
 	};
 
 	let formValidation = {
 		name: false,
 		hour: false,
 		min: false,
-		timezone: false
+		timezone: false,
+		discord: false,
+		twitter: false,
+		website: false,
+		supply: false,
+		coin: false,
+		price: false,
+		details: false
 	};
 
 	let formErrors = {
 		name: '',
 		hour: '',
 		min: '',
-		timezone: ''
+		timezone: '',
+		discord: '',
+		twitter: '',
+		website: '',
+		supply: '',
+		coin: '',
+		price: '',
+		details: ''
 	};
 
 	let formIsValid = false;
@@ -39,7 +68,14 @@
 			formValidation.name &&
 			formValidation.hour &&
 			formValidation.min &&
-			formValidation.timezone
+			formValidation.timezone &&
+			formValidation.discord &&
+			formValidation.twitter &&
+			formValidation.website &&
+			formValidation.supply &&
+			formValidation.coin &&
+			formValidation.price &&
+			formValidation.details
 		) {
 			formIsValid = true;
 		} else {
@@ -50,10 +86,12 @@
 		console.log(formErrors);
 	}
 
-	function handleNameInput() {
-		console.log('handleNameInput triggered');
+	// TODO need to create a general handletextinput() method.
+	// check out meetups validation.js
+	function handleProjectInput() {
+		console.log('handleProjectInput triggered');
 		if (formValues.name.trim().length <= 3) {
-			formErrors.name = 'Please input NAME details';
+			formErrors.name = 'please input name details';
 			formValidation.name = false;
 			formIsValid = false;
 		} else {
@@ -65,7 +103,7 @@
 	function handleHourInput() {
 		console.log('handleHourInput triggered');
 		if (formValues.hour.trim().length === 0) {
-			formErrors.hour = 'Please input HOUR details';
+			formErrors.hour = 'please input hour details';
 			formValidation.hour = false;
 			formIsValid = false;
 		} else {
@@ -77,7 +115,7 @@
 	function handleMinInput() {
 		console.log('handleMinInput triggered');
 		if (formValues.min.trim().length === 0) {
-			formErrors.min = 'Please input MINUTES details';
+			formErrors.min = 'please input minutes details';
 			formValidation.min = false;
 			formIsValid = false;
 		} else {
@@ -89,7 +127,7 @@
 	function handleTimezoneInput() {
 		console.log('handleTimezoneInput triggered');
 		if (formValues.timezone.trim().length === 0) {
-			formErrors.timezone = 'Please input TIMEZONE details';
+			formErrors.timezone = 'please input timezone details';
 			formValidation.timezone = false;
 			formIsValid = false;
 		} else {
@@ -98,28 +136,111 @@
 		}
 	}
 
+	function handleDiscordInput() {
+		console.log('handleDiscordInput triggered');
+		if (formValues.discord.trim().length === 0) {
+			formErrors.discord = 'please input discord details';
+			formValidation.discord = false;
+			formIsValid = false;
+		} else {
+			formValidation.discord = true;
+			formErrors.discord = '';
+		}
+	}
+
+	function handleTwitterInput() {
+		console.log('handleTwitterInput triggered');
+		if (formValues.twitter.trim().length === 0) {
+			formErrors.twitter = 'please input twitter details';
+			formValidation.twitter = false;
+			formIsValid = false;
+		} else {
+			formValidation.twitter = true;
+			formErrors.twitter = '';
+		}
+	}
+
+	function handleWebsiteInput() {
+		console.log('handleWebsiteInput triggered');
+		if (formValues.website.trim().length === 0) {
+			formErrors.website = 'please input website details';
+			formValidation.website = false;
+			formIsValid = false;
+		} else {
+			formValidation.website = true;
+			formErrors.website = '';
+		}
+	}
+
+	function handleSupplyInput() {
+		console.log('handleSupplyInput triggered');
+		if (formValues.supply.trim().length === 0) {
+			formErrors.supply = 'please input supply details';
+			formValidation.supply = false;
+			formIsValid = false;
+		} else {
+			formValidation.supply = true;
+			formErrors.supply = '';
+		}
+	}
+
+	function handleCoinInput() {
+		console.log('handleCoinInput triggered');
+		if (formValues.coin.trim().length === 0) {
+			formErrors.coin = 'please input coin details';
+			formValidation.coin = false;
+			formIsValid = false;
+		} else {
+			formValidation.coin = true;
+			formErrors.coin = '';
+		}
+	}
+
+	function handlePriceInput() {
+		console.log('handlePriceInput triggered');
+		if (formValues.price.trim().length === 0) {
+			formErrors.price = 'please input price details';
+			formValidation.price = false;
+			formIsValid = false;
+		} else {
+			formValidation.price = true;
+			formErrors.price = '';
+		}
+	}
+
+	function handleDetailsInput() {
+		console.log('handleDetailsInput triggered');
+		if (formValues.details.trim().length === 0) {
+			formErrors.details = 'please input details';
+			formValidation.details = false;
+			formIsValid = false;
+		} else {
+			formValidation.details = true;
+			formErrors.details = '';
+		}
+	}
+
 	function handleSubmit() {
-		// Q: The Daisy Modal uses a label for the button
-		// Not sure how to add a <button> for form submit w/o
+		// Q: the daisy modal uses a label for the button
+		// not sure how to add a <button> for form submit w/o
 		// losing the toggle modal functionality.
 		// console.log(formValues);
 
 		// Add some basic validation
 		// Q: Do I need to call these validation handlers
 		// all right here? Or just bind them on the inputs
-		// using event handlers? E.g. on:change={handleNameInput}
+		// using event handlers? E.g. on:change={handleProjectInput}
 		// A: YES! on:change ONLY runs when value changes!
 		// If the user leaves it blank, it never triggers!
-		handleNameInput();
+		handleProjectInput();
 		handleHourInput();
 		handleMinInput();
 		handleTimezoneInput();
 
 		if (formIsValid) {
-			const newEvent = {
+			const newProject = {
 				...formValues,
 				id: Math.floor(Math.random() * 1000),
-				name: formValues.name,
 				time: `${formValues.hour}${formValues.min}`,
 				datetime: `${$selectedDayStore.date}T${formValues.hour}:${formValues.min}`, // 	'2022-01-25T14:00'
 				href: '#'
@@ -130,7 +251,7 @@
 			// 'days' or '$days' both seem to work...
 			days.update(($days) => {
 				// Need to find isSelected and update its events array
-				$days.find((day) => day.isSelected).events.push(newEvent);
+				$days.find((day) => day.isSelected).events.push(newProject);
 				// Don't forget to return the updated Store!
 				return $days;
 			});
@@ -141,7 +262,14 @@
 				name: '',
 				hour: '',
 				min: '',
-				timezone: ''
+				timezone: '',
+				discord: '',
+				twitter: '',
+				website: '',
+				supply: '',
+				coin: '',
+				price: '',
+				details: ''
 			};
 			formIsValid = false;
 
@@ -157,13 +285,13 @@
 <form on:submit|preventDefault={handleSubmit}>
 	<div class="form-control py-2">
 		<label class="input-group" for="name">
-			<span>Event Name</span>
+			<span>Project Name</span>
 			<input
 				type="text"
 				id="name"
 				bind:value={formValues.name}
-				on:keyup={handleNameInput}
-				placeholder="info@site.com"
+				on:keyup={handleProjectInput}
+				placeholder="Taiyo Robotics"
 				class="input input-bordered"
 			/>
 		</label>
@@ -270,6 +398,6 @@
 	</div>
 
 	<div class="modal-action">
-		<label for="add-event-modal" class="btn" on:click={handleSubmit}>Add Event</label>
+		<label for="add-event-modal" class="btn" on:click={handleSubmit}>Add Project</label>
 	</div>
 </form>

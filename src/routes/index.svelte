@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
 	import { days, selectedDayStore } from '$lib/stores';
-	import Header from '$lib/components/Header.svelte';
+	import Header from '$lib/components/ui/Header.svelte';
 
 	// Q: Do I need this to be reactive or just a variable?
 	// A: MUST be reactive! Simple variable won't react/update!
@@ -103,10 +103,10 @@
 						>
 							{day.date.split('-').pop().replace(/^0/, '')}
 						</time>
-						<p class="sr-only">{day.events.length} events</p>
-						{#if day.events.length > 0}
+						<p class="sr-only">{day.projects.length} projects</p>
+						{#if day.projects.length > 0}
 							<div class="-mx-0.5 mt-auto flex flex-wrap-reverse">
-								{#each day.events as event (event.id)}
+								{#each day.projects as project (project.id)}
 									<div class="mx-0.5 mb-1 h-1.5 w-1.5 rounded-full bg-gray-400" />
 								{/each}
 							</div>
@@ -116,16 +116,16 @@
 			</div>
 		</div>
 	</div>
-	{#if $selectedDayStore?.events.length > 0}
+	{#if $selectedDayStore?.projects.length > 0}
 		<div class="py-10 px-4 sm:px-6">
 			<ol
 				class="divide-y divide-gray-100 overflow-hidden rounded-lg bg-white text-sm shadow ring-1 ring-black ring-opacity-5"
 			>
-				{#each $selectedDayStore.events as event (event.id)}
+				{#each $selectedDayStore.projects as project (project.id)}
 					<li class="group flex p-4 pr-6 focus-within:bg-gray-50 hover:bg-gray-50">
 						<div class="flex-auto">
-							<p class="font-semibold text-gray-900">{event.name}</p>
-							<time datetime={event.datetime} class="mt-2 flex items-center text-gray-700">
+							<p class="font-semibold text-gray-900">{project.name}</p>
+							<time datetime={project.datetime} class="mt-2 flex items-center text-gray-700">
 								<!-- Heroicon name: solid/clock -->
 								<svg
 									class="mr-2 h-5 w-5 text-gray-400"
@@ -140,13 +140,13 @@
 										clip-rule="evenodd"
 									/>
 								</svg>
-								{event.time}
+								{project.time}
 							</time>
 						</div>
 						<a
-							href={event.href}
+							href={project.href}
 							class="ml-6 flex-none self-center rounded-md border border-gray-300 bg-white py-2 px-3 font-semibold text-gray-700 opacity-0 shadow-sm hover:bg-gray-50 focus:opacity-100 group-hover:opacity-100"
-							>Edit<span class="sr-only">, {event.name}</span></a
+							>Edit<span class="sr-only">, {project.name}</span></a
 						>
 					</li>
 				{/each}

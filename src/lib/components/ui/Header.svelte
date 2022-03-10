@@ -1,9 +1,7 @@
 <script>
-	import AddEventForm from '$lib/components/AddEventForm.svelte';
-	import Modal from '$lib/components/Modal.svelte';
-	import DropdownMenu from './DropdownMenu.svelte';
-	import Component1 from '$lib/components/Component1.svelte';
-	import Component2 from '$lib/components/Component2.svelte';
+	import AddProjectForm from '$lib/components/projects/AddProjectForm.svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
+	import DropdownMenu from '$lib/components/ui/DropdownMenu.svelte';
 	import { showModalStore } from '$lib/stores';
 
 	let showMenu = false;
@@ -89,7 +87,7 @@
 			<!--		<input type="checkbox" id="add-event-modal" class="modal-toggle" /> -->
 			<!-- NOTE Had to tweak the default DaisyUI to use the dynamic Modal -->
 			<!-- NOTE This means I swapped for a button and created a showModalStore -->
-			<button on:click={() => toggleModal(AddEventForm)} class="btn">Add Event</button>
+			<button on:click={() => toggleModal(AddProjectForm)} class="btn">Add Project</button>
 			{#if $showModalStore}
 				<Modal on:click={toggleModal} {modalContent} />
 			{/if}

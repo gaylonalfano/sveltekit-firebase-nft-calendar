@@ -88,8 +88,8 @@
 
 	// TODO need to create a general handletextinput() method.
 	// check out meetups validation.js
-	function handleProjectInput() {
-		console.log('handleProjectInput triggered');
+	function handleNameInput() {
+		console.log('handleNameInput triggered');
 		if (formValues.name.trim().length <= 3) {
 			formErrors.name = 'please input name details';
 			formValidation.name = false;
@@ -229,13 +229,20 @@
 		// Add some basic validation
 		// Q: Do I need to call these validation handlers
 		// all right here? Or just bind them on the inputs
-		// using event handlers? E.g. on:change={handleProjectInput}
+		// using event handlers? E.g. on:change={handleNameInput}
 		// A: YES! on:change ONLY runs when value changes!
 		// If the user leaves it blank, it never triggers!
-		handleProjectInput();
+		handleNameInput();
 		handleHourInput();
 		handleMinInput();
 		handleTimezoneInput();
+		handleDiscordInput();
+		handleTwitterInput();
+		handleWebsiteInput();
+		handleSupplyInput();
+		handleCoinInput();
+		handlePriceInput();
+		handleDetailsInput();
 
 		if (formIsValid) {
 			const newProject = {
@@ -251,7 +258,7 @@
 			// 'days' or '$days' both seem to work...
 			days.update(($days) => {
 				// Need to find isSelected and update its events array
-				$days.find((day) => day.isSelected).events.push(newProject);
+				$days.find((day) => day.isSelected).projects.push(newProject);
 				// Don't forget to return the updated Store!
 				return $days;
 			});
@@ -290,7 +297,7 @@
 				type="text"
 				id="name"
 				bind:value={formValues.name}
-				on:keyup={handleProjectInput}
+				on:keyup={handleNameInput}
 				placeholder="Taiyo Robotics"
 				class="input input-bordered"
 			/>
@@ -309,7 +316,7 @@
 				bind:value={$selectedDayStore.date}
 				type="text"
 				id="date"
-				placeholder="info@site.com"
+				placeholder="2022-01-01"
 				class="input input-bordered"
 				disabled
 			/>
@@ -395,6 +402,142 @@
 				</div>
 			{/if}
 		</div>
+	</div>
+
+	<div class="form-control py-2">
+		<label class="input-group" for="discord">
+			<span>Discord</span>
+			<input
+				type="text"
+				id="discord"
+				bind:value={formValues.discord}
+				on:keyup={handleDiscordInput}
+				placeholder="discord.gg/taiyorobotics"
+				class="input input-bordered"
+			/>
+		</label>
+		{#if formErrors.discord}
+			<div>
+				<span class="text-xs">{formErrors.discord}</span>
+			</div>
+		{/if}
+	</div>
+
+	<div class="form-control py-2">
+		<label class="input-group" for="twitter">
+			<span>Twitter</span>
+			<input
+				type="text"
+				id="twitter"
+				bind:value={formValues.twitter}
+				on:keyup={handleTwitterInput}
+				placeholder="@twitter"
+				class="input input-bordered"
+			/>
+		</label>
+		{#if formErrors.twitter}
+			<div>
+				<span class="text-xs">{formErrors.twitter}</span>
+			</div>
+		{/if}
+	</div>
+
+	<div class="form-control py-2">
+		<label class="input-group" for="website">
+			<span>Website</span>
+			<input
+				type="text"
+				id="website"
+				bind:value={formValues.website}
+				on:keyup={handleWebsiteInput}
+				placeholder="www.website.com"
+				class="input input-bordered"
+			/>
+		</label>
+		{#if formErrors.website}
+			<div>
+				<span class="text-xs">{formErrors.website}</span>
+			</div>
+		{/if}
+	</div>
+
+	<div class="form-control py-2">
+		<label class="input-group" for="supply">
+			<span>Supply</span>
+			<input
+				type="text"
+				id="supply"
+				bind:value={formValues.supply}
+				on:keyup={handleSupplyInput}
+				placeholder="5000"
+				class="input input-bordered"
+			/>
+		</label>
+		{#if formErrors.supply}
+			<div>
+				<span class="text-xs">{formErrors.supply}</span>
+			</div>
+		{/if}
+	</div>
+
+	<div class="form-control py-2">
+		<label for="coin" class="label">Coin</label>
+		<select
+			bind:value={formValues.coin}
+			on:change={handleCoinInput}
+			class="select max-w-xs select-bordered"
+		>
+			<option disabled selected>Coin</option>
+			<option value="SOL">SOL</option>
+			<option value="ETH">ETH</option>
+			<option value="NEAR">NEAR</option>
+			<option value="LUNA">LUNA</option>
+			<option value="AVAX">AVAX</option>
+			<option value="XTZ">XTZ</option>
+		</select>
+		{#if formErrors.coin}
+			<div>
+				<span class="text-xs">{formErrors.coin}</span>
+			</div>
+		{/if}
+	</div>
+
+	<div class="form-control py-2">
+		<label class="input-group" for="price">
+			<span>Price</span>
+			<input
+				type="text"
+				id="price"
+				bind:value={formValues.price}
+				on:keyup={handlePriceInput}
+				placeholder="1.5"
+				class="input input-bordered"
+			/>
+		</label>
+		{#if formErrors.price}
+			<div>
+				<span class="text-xs">{formErrors.price}</span>
+			</div>
+		{/if}
+	</div>
+
+	<div class="form-control">
+		<label class="label" for="details">
+			<span class="label-text">Details</span>
+		</label>
+		<textarea
+			id="details"
+			class="textarea textarea-bordered h-24"
+			placeholder="TL;DR"
+			name="details"
+			bind:value={formValues.details}
+			on:keyup={handleDetailsInput}
+		/>
+		{#if formErrors.details}
+			<div>
+				<span class="text-xs">{formErrors.details}</span>
+			</div>
+		{/if}
 	</div>
 
 	<div class="modal-action">

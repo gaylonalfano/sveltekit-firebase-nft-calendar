@@ -1,7 +1,6 @@
 <script>
 	import AddProjectForm from '$lib/components/projects/AddProjectForm.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import DropdownMenu from '$lib/components/ui/DropdownMenu.svelte';
 	import { showModalStore } from '$lib/stores';
 
 	let showMenu = false;
@@ -79,7 +78,7 @@
 			</button>
 		</div>
 		<div class="hidden md:ml-4 md:flex md:items-center">
-			<DropdownMenu />
+			<!-- NOTE Could add DropdownMenu later if I want to toggle views -->
 			<div class="ml-6 h-6 w-px bg-gray-300" />
 			<!-- The button to open modal -->
 			<!--<label for="add-event-modal" class="btn modal-button">Add Event</label>-->

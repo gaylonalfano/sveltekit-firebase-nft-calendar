@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { days, selectedDayStore } from '$lib/stores';
+	import { calendar, days, selectedDayStore } from '$lib/stores';
 	import Header from '$lib/components/ui/Header.svelte';
 
 	// Q: Do I need this to be reactive or just a variable?
@@ -42,6 +42,7 @@
 	}
 
 	// $: console.log('selectedDay', selectedDay);
+	console.log($calendar);
 </script>
 
 <h1 class="text-3xl underline text-center py-4">NFT Mint Calendar: {$selectedDayStore.date}</h1>

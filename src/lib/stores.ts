@@ -1,5 +1,12 @@
 import { writable, derived, readable } from 'svelte/store';
 
+function getDatesInRange(min, max) {
+	return Array((max - min) / 86400000)
+		.fill(0)
+		.map((_, i) => new Date(new Date().setUTCDate(min.getDate() + i)));
+}
+export const calendar = writable(getDatesInRange(new Date('1-1-2022'), new Date('12-31-2022')));
+
 export const days = writable([
 	{ date: '2021-12-27', projects: [] },
 	{ date: '2021-12-28', projects: [] },

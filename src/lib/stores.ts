@@ -1,11 +1,74 @@
 import { writable, derived, readable } from 'svelte/store';
 
-function getDatesInRange(min, max) {
+function getDatesInRange(min, max): Date[] {
 	return Array((max - min) / 86400000)
 		.fill(0)
 		.map((_, i) => new Date(new Date().setUTCDate(min.getDate() + i)));
 }
-export const calendar = writable(getDatesInRange(new Date('1-1-2022'), new Date('12-31-2022')));
+
+function dateIsToday(date: Date) {
+	const today = new Date();
+	return (
+		date.getDate() == today.getDate() &&
+		date.getMonth() == today.getMonth() &&
+		date.getFullYear() == today.getFullYear()
+	);
+}
+
+function createCalendarStore() {
+	const months = [
+		'January',
+		'February',
+		'March',
+		'April',
+		'May',
+		'June',
+		'July',
+		'August',
+		'September',
+		'October',
+		'November',
+		'December'
+	];
+	const today = new Date();
+	const currentMonthString = months[today.getMonth()]; // E.g. 'March'
+	const currentMonth = today.getMonth();
+
+	// Generate Array of Date objects
+	const dates = getDatesInRange(new Date('1-1-2022'), new Date('12-31-2022'));
+
+	const calendar = dates.map((d) => {
+		// NOTE getMonth() is 0-indexed, so Dec = 11
+		const dateString: string = d.toString(); // Wed Oct 05 2011 ...
+		const dateISOString: string = d.toISOString(); // 2011-10-05T14:48:00.000Z
+		const date = dateISOString.slice(0, 10);
+		const day = dateString.slice(0, 3);
+		const month = dateString.slice(4, 7);
+		// TODO Test previousMonth isn't messing up other vars like nextMonth, etc.
+		const previousMonth = d.setMonth(d.getMonth() - 1);
+		const nextMonth = ((d.getMonth() + 1) % 12) + 1;
+		const isToday = dateIsToday(d);
+		const isSelected = false;
+		const isCurrentMonth = currentMonth === d.getMonth();
+
+		return {
+			date,
+			dateISOString,
+			day,
+			month,
+			nextMonth,
+			previousMonth,
+			isToday,
+			isSelected,
+			isCurrentMonth,
+			projects: []
+		};
+	});
+
+	// Need to return an Array of objects
+	return calendar;
+}
+export const calendar = writable(createCalendarStore());
 
 export const days = writable([
 	{ date: '2021-12-27', projects: [] },

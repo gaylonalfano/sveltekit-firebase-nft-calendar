@@ -1,18 +1,100 @@
 import { writable, derived, readable } from 'svelte/store';
 
+const today = new Date();
+console.log(today);
+
 function getDatesInRange(min, max): Date[] {
-	return Array((max - min) / 86400000)
-		.fill(0)
-		.map((_, i) => new Date(new Date().setUTCDate(min.getDate() + i)));
+	// = Option 1: https://stackoverflow.com/a/4413721
+	const dates = [];
+	while (min < max) {
+		// this line modifies the original firstDate reference which you want to make the while loop work
+		// NOTE setDate() vs. setUTCDate() cause variations!
+		min.setDate(min.getDate() + 1);
+		// this pushes a new date , if you were to push firstDate then you will keep updating every item in the array
+		dates.push(new Date(min));
+	}
+	return dates;
 }
 
 function dateIsToday(date: Date) {
-	const today = new Date();
 	return (
 		date.getDate() == today.getDate() &&
 		date.getMonth() == today.getMonth() &&
 		date.getFullYear() == today.getFullYear()
 	);
+}
+
+function getNextMonth(date: Date) {
+	// https://stackoverflow.com/a/27024351
+	// NOTE If I want 1..12, then need to + 1 at end (otherwise 0..11)
+	return (date.getMonth() + 1) % 12;
+}
+
+function getPreviousMonth(date: Date) {
+	// = Option 1: Don't use setMonth()
+	// https://stackoverflow.com/a/27024351
+	// NOTE If I want 1..12, then need to + 1 at end (otherwise 0..11)
+	return (date.getMonth() + 11) % 12;
+
+	// = Option 2: Use setMonth()
+	// NOTE This setMonth() can alter original Date object!
+	// const newDate = date;
+	// newDate.setMonth(newDate.getMonth() - 1);
+	// // console.log('date:', date);
+	// // console.log('newDate:', newDate);
+	// return newDate.getMonth();
+}
+
+function addDummyProjectsData(calendar: Record<string, any>[]) {
+	const dummyDates = ['2022-01-03', '2022-01-07', '2022-01-12', '2022-01-22', '2022-02-03'];
+	const dummyProjects = [
+		{ id: 1, name: 'Design review', time: '10AM', datetime: '2022-01-03T10:00', href: '#' },
+		{ id: 2, name: 'Sales meeting', time: '2PM', datetime: '2022-01-03T14:00', href: '#' },
+		{ id: 3, name: 'Date night', time: '6PM', datetime: '2022-01-08T18:00', href: '#' },
+		{
+			id: 6,
+			name: "Sam's birthday party",
+			time: '2PM',
+			datetime: '2022-01-25T14:00',
+			href: '#'
+		},
+		{
+			id: 4,
+			name: 'Maple syrup museum',
+			time: '3PM',
+			datetime: '2022-01-22T15:00',
+			href: '#'
+		},
+		{ id: 5, name: 'Hockey game', time: '7PM', datetime: '2022-01-22T19:00', href: '#' },
+		{ id: 8, name: 'Go looting', time: '8PM', datetime: '2022-01-22T20:00', href: '#' },
+		{ id: 9, name: 'Read Expanse', time: '9PM', datetime: '2022-01-22T21:00', href: '#' },
+		{
+			id: 7,
+			name: 'Cinema with friends',
+			time: '9PM',
+			datetime: '2022-02-04T21:00',
+			href: '#'
+		}
+	];
+
+	// FIXME Think I should only loop over dummyDates and update Store inside
+	dummyDates.forEach((d) => {
+		dummyProjects.forEach((p) => {
+			if (p.datetime.slice(0, 10) === d) {
+				// = Option 1: Update Array of Objects
+				// NOTE calendar dates are 'YYYY-MM-DD' with 0 padding 01, 02, etc.
+				const calendarDate = calendar.find((i) => i.date === d);
+				// FIXME calendarDate is undefined...
+				console.log('calendarDate', calendarDate);
+				// calendar.find((i) => i.date === d).projects.push(p);
+
+				// = Option 2: Update Store directly
+				// calendarStore.update((items) => {
+				// 	items.find((i) => i.date === d).projects.push(p);
+				// });
+			}
+		});
+	});
 }
 
 function createCalendarStore() {
@@ -30,34 +112,43 @@ function createCalendarStore() {
 		'November',
 		'December'
 	];
-	const today = new Date();
 	const currentMonthString = months[today.getMonth()]; // E.g. 'March'
 	const currentMonth = today.getMonth();
 
 	// Generate Array of Date objects
+	// FIXME Date objs in dates[] off by 1 vs. calendar
 	const dates = getDatesInRange(new Date('1-1-2022'), new Date('12-31-2022'));
+	console.log(dates);
 
 	const calendar = dates.map((d) => {
 		// NOTE getMonth() is 0-indexed, so Dec = 11
 		const dateString: string = d.toString(); // Wed Oct 05 2011 ...
-		const dateISOString: string = d.toISOString(); // 2011-10-05T14:48:00.000Z
-		const date = dateISOString.slice(0, 10);
+		// const dateISOString: string = d.toISOString(); // 2011-10-05T14:48:00.000Z
+		const date =
+			d.getFullYear() + // YYYY
+			'-' +
+			(d.getMonth() + 1).toString().padStart(2, '0') + // MM
+			'-' +
+			d.getDate().toString().padStart(2, '0'); // DD
 		const day = dateString.slice(0, 3);
 		const month = dateString.slice(4, 7);
-		// TODO Test previousMonth isn't messing up other vars like nextMonth, etc.
-		const previousMonth = d.setMonth(d.getMonth() - 1);
-		const nextMonth = ((d.getMonth() + 1) % 12) + 1;
+		const monthNum = d.getMonth();
+		// const previousMonth = getPreviousMonth(d);
+		// const nextMonth = getNextMonth(d);
 		const isToday = dateIsToday(d);
 		const isSelected = false;
 		const isCurrentMonth = currentMonth === d.getMonth();
 
 		return {
+			dateObject: d,
 			date,
-			dateISOString,
+			dateString,
+			// dateISOString,
 			day,
 			month,
-			nextMonth,
-			previousMonth,
+			monthNum,
+			// nextMonth,
+			// previousMonth,
 			isToday,
 			isSelected,
 			isCurrentMonth,
@@ -65,10 +156,13 @@ function createCalendarStore() {
 		};
 	});
 
+	// Add some dummy data for testing
+	addDummyProjectsData(calendar);
+
 	// Need to return an Array of objects
 	return calendar;
 }
-export const calendar = writable(createCalendarStore());
+export const calendarStore = writable(createCalendarStore());
 
 export const days = writable([
 	{ date: '2021-12-27', projects: [] },

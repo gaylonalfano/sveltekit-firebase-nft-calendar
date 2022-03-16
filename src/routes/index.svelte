@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { calendar, days, selectedDayStore } from '$lib/stores';
+	import { calendarStore, days, selectedDayStore } from '$lib/stores';
 	import Header from '$lib/components/ui/Header.svelte';
 
 	// Q: Do I need this to be reactive or just a variable?
@@ -8,6 +8,7 @@
 	// used across multiple components.
 	// $: selectedDay = $days.find((day) => day.isSelected); // Works
 	// let selectedDay = $days.find((day) => day.isSelected); // Doesn't update!
+	$: today = new Date();
 
 	function updateSelectedDay() {
 		// console.log('Clicked!', e); // e.target is either <button> or <time>
@@ -42,10 +43,13 @@
 	}
 
 	// $: console.log('selectedDay', selectedDay);
-	console.log($calendar);
+	console.log($calendarStore);
 </script>
 
-<h1 class="text-3xl underline text-center py-4">NFT Mint Calendar: {$selectedDayStore.date}</h1>
+<h1 class="text-3xl underline text-center py-4">
+	NFT Mint calendarStore: {$selectedDayStore.date}
+</h1>
+<h4>Today: {today.toISOString()}</h4>
 
 <!-- This example requires Tailwind CSS v2.0+ -->
 <div class="max-w-screen-xl min-w-screen-sm">

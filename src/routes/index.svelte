@@ -33,12 +33,20 @@
 		// 	return currentStore;
 		// });
 		// = Attempt 2:
-		days.update(($days) => {
+		// days.update(($days) => {
+		// 	// Change previous isSelected to false
+		// 	$days.find((day) => day.isSelected).isSelected = false;
+		// 	// Update the clicked date to be the new isSelected
+		// 	$days.find((day) => day.date === selectedDate).isSelected = true;
+		// 	return $days;
+		// });
+		// === Using new calendarStore instead of days
+		calendarStore.update(($calendarStore) => {
 			// Change previous isSelected to false
-			$days.find((day) => day.isSelected).isSelected = false;
+			$calendarStore.find((day) => day.isSelected).isSelected = false;
 			// Update the clicked date to be the new isSelected
-			$days.find((day) => day.date === selectedDate).isSelected = true;
-			return $days;
+			$calendarStore.find((day) => day.date === selectedDate).isSelected = true;
+			return $calendarStore;
 		});
 	}
 
@@ -69,7 +77,7 @@
 		<div class="flex bg-gray-200 text-xs leading-6 text-gray-700 lg:flex-auto">
 			<!-- SMALL/MED SCREEN ONLY wraps each day in a button -->
 			<div class="isolate grid w-full grid-cols-7 grid-rows-6 gap-px">
-				{#each $days as day (day.date)}
+				{#each $calendarStore as day (day.date)}
 					<!--
 					Always include: "flex h-14 flex-col py-2 px-3 hover:bg-gray-100 focus:z-10"
 					Is current month, include: "bg-white"

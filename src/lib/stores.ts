@@ -1,9 +1,11 @@
 import { writable, derived, readable } from 'svelte/store';
+// NOTE Dates are in YYYY-MM-DD format
+// NOTE Months are 0-indexed (Dec = 11, Jan = 0)
 
 const today = new Date();
 console.log(today);
 
-function getDatesInRange(min, max): Date[] {
+function getDatesInRange(min: Date, max: Date): Date[] {
 	// = Option 1: https://stackoverflow.com/a/4413721
 	const dates = [];
 	while (min < max) {
@@ -72,29 +74,23 @@ function addDummyProjectsData(calendar: Record<string, any>[]) {
 			id: 7,
 			name: 'Cinema with friends',
 			time: '9PM',
-			datetime: '2022-02-04T21:00',
+			datetime: '2022-02-03T21:00',
 			href: '#'
 		}
 	];
 
-	// FIXME Think I should only loop over dummyDates and update Store inside
 	dummyDates.forEach((d) => {
 		dummyProjects.forEach((p) => {
 			if (p.datetime.slice(0, 10) === d) {
-				// = Option 1: Update Array of Objects
+				// Update Array of Objects (or Store?)
 				// NOTE calendar dates are 'YYYY-MM-DD' with 0 padding 01, 02, etc.
-				const calendarDate = calendar.find((i) => i.date === d);
-				// FIXME calendarDate is undefined...
-				console.log('calendarDate', calendarDate);
-				// calendar.find((i) => i.date === d).projects.push(p);
-
-				// = Option 2: Update Store directly
-				// calendarStore.update((items) => {
-				// 	items.find((i) => i.date === d).projects.push(p);
-				// });
+				calendar.find((i) => i.date === d).projects.push(p);
 			}
 		});
 	});
+
+	// Add a single isSelected: true date
+	calendar.find((i) => i.date === '2022-01-12').isSelected = true;
 }
 
 function createCalendarStore() {
@@ -124,6 +120,7 @@ function createCalendarStore() {
 		// NOTE getMonth() is 0-indexed, so Dec = 11
 		const dateString: string = d.toString(); // Wed Oct 05 2011 ...
 		// const dateISOString: string = d.toISOString(); // 2011-10-05T14:48:00.000Z
+		// NOTE Don't use ISO! It doesn't account for local timezone differences!
 		const date =
 			d.getFullYear() + // YYYY
 			'-' +
@@ -133,8 +130,8 @@ function createCalendarStore() {
 		const day = dateString.slice(0, 3);
 		const month = dateString.slice(4, 7);
 		const monthNum = d.getMonth();
-		// const previousMonth = getPreviousMonth(d);
-		// const nextMonth = getNextMonth(d);
+		const previousMonth = getPreviousMonth(d);
+		const nextMonth = getNextMonth(d);
 		const isToday = dateIsToday(d);
 		const isSelected = false;
 		const isCurrentMonth = currentMonth === d.getMonth();
@@ -143,12 +140,11 @@ function createCalendarStore() {
 			dateObject: d,
 			date,
 			dateString,
-			// dateISOString,
 			day,
 			month,
 			monthNum,
-			// nextMonth,
-			// previousMonth,
+			nextMonth,
+			previousMonth,
 			isToday,
 			isSelected,
 			isCurrentMonth,
@@ -262,7 +258,10 @@ export const days = writable([
 
 export const showModalStore = writable(false);
 
-export const selectedDayStore = derived(days, ($days) => $days.find((day) => day.isSelected));
+// export const selectedDayStore = derived(days, ($days) => $days.find((day) => day.isSelected));
+export const selectedDayStore = derived(calendarStore, ($calendarStore) =>
+	$calendarStore.find((day) => day.isSelected)
+);
 
 export const menuItemsStore = writable([
 	{ id: '0', name: 'Day view', href: '#', active: false },

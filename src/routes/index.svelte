@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { calendarStore, days, selectedDayStore } from '$lib/stores';
+	import { calendarStore, selectedStore } from '$lib/stores';
 	import Header from '$lib/components/ui/Header.svelte';
 
 	// Q: Do I need this to be reactive or just a variable?
@@ -55,7 +55,7 @@
 </script>
 
 <h1 class="text-3xl underline text-center py-4">
-	NFT Mint calendarStore: {$selectedDayStore.date}
+	NFT Mint calendarStore: {$selectedStore.date}
 </h1>
 <h4>Today: {today.toISOString()}</h4>
 
@@ -129,12 +129,12 @@
 			</div>
 		</div>
 	</div>
-	{#if $selectedDayStore?.projects.length > 0}
+	{#if $selectedStore?.projects.length > 0}
 		<div class="py-10 px-4 sm:px-6">
 			<ol
 				class="divide-y divide-gray-100 overflow-hidden rounded-lg bg-white text-sm shadow ring-1 ring-black ring-opacity-5"
 			>
-				{#each $selectedDayStore.projects as project (project.id)}
+				{#each $selectedStore.projects as project (project.id)}
 					<li class="group flex p-4 pr-6 focus-within:bg-gray-50 hover:bg-gray-50">
 						<div class="flex-auto">
 							<p class="font-semibold text-gray-900">{project.name}</p>

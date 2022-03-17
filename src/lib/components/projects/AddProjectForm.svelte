@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { days, selectedDayStore, showModalStore } from '$lib/stores';
+	import { selectedStore, showModalStore } from '$lib/stores';
 
 	// Can create a local reactive variable or use a store...
 	// $: selectedDay = $days.find((day) => day.isSelected);

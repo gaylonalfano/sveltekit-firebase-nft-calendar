@@ -1,8 +1,5 @@
 <script lang="ts">
-	import { selectedStore, showModalStore } from '$lib/stores';
-
-	// Can create a local reactive variable or use a store...
-	// $: selectedDay = $days.find((day) => day.isSelected);
+	import { selectedStore, calendarStore, showModalStore } from '$lib/stores';
 
 	interface Project {
 		id: number;
@@ -249,18 +246,18 @@
 				...formValues,
 				id: Math.floor(Math.random() * 1000),
 				time: `${formValues.hour}${formValues.min}`,
-				datetime: `${$selectedDayStore.date}T${formValues.hour}:${formValues.min}`, // 	'2022-01-25T14:00'
+				datetime: `${$selectedStore.date}T${formValues.hour}:${formValues.min}`, // 	'2022-01-25T14:00'
 				href: '#'
 			};
 
 			// Update our days
 			// Q: Do where exactly do I use '$' on Store?
-			// 'days' or '$days' both seem to work...
-			days.update(($days) => {
+			// 'calendar' or '$calendar' both seem to work...
+			calendarStore.update(($calendarStore) => {
 				// Need to find isSelected and update its events array
-				$days.find((day) => day.isSelected).projects.push(newProject);
+				$calendarStore.find((day) => day.isSelected).projects.push(newProject);
 				// Don't forget to return the updated Store!
-				return $days;
+				return $calendarStore;
 			});
 
 			// Reset form and formValues
@@ -313,7 +310,7 @@
 		<label class="input-group" for="date">
 			<span>Date</span>
 			<input
-				bind:value={$selectedDayStore.date}
+				bind:value={$selectedStore.date}
 				type="text"
 				id="date"
 				placeholder="2022-01-01"

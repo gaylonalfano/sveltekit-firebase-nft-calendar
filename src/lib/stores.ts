@@ -28,14 +28,14 @@ function dateIsToday(date: Date) {
 function getNextMonth(date: Date) {
 	// https://stackoverflow.com/a/27024351
 	// NOTE If I want 1..12, then need to + 1 at end (otherwise 0..11)
-	return (date.getMonth() + 1) % 12;
+	return ((date.getMonth() + 1) % 12) + 1;
 }
 
 function getPreviousMonth(date: Date) {
 	// = Option 1: Don't use setMonth()
 	// https://stackoverflow.com/a/27024351
 	// NOTE If I want 1..12, then need to + 1 at end (otherwise 0..11)
-	return (date.getMonth() + 11) % 12;
+	return ((date.getMonth() + 11) % 12) + 1;
 
 	// = Option 2: Use setMonth()
 	// NOTE This setMonth() can alter original Date object!
@@ -46,34 +46,42 @@ function getPreviousMonth(date: Date) {
 	// return newDate.getMonth();
 }
 
+function getDaysInMonth(date: Date) {
+	// https://bobbyhadz.com/blog/javascript-get-number-of-days-in-month
+	const currentYear = date.getFullYear();
+	const currentMonth = date.getMonth() + 1; // 0-based index
+
+	return new Date(currentYear, currentMonth, 0).getDate();
+}
+
 function addDummyProjectsData(calendar: Record<string, any>[]) {
-	const dummyDates = ['2022-01-03', '2022-01-07', '2022-01-12', '2022-01-22', '2022-02-03'];
+	const dummyDates = ['2022-03-03', '2022-03-07', '2022-03-12', '2022-03-22', '2022-04-03'];
 	const dummyProjects = [
-		{ id: 1, name: 'Design review', time: '10AM', datetime: '2022-01-03T10:00', href: '#' },
-		{ id: 2, name: 'Sales meeting', time: '2PM', datetime: '2022-01-03T14:00', href: '#' },
-		{ id: 3, name: 'Date night', time: '6PM', datetime: '2022-01-08T18:00', href: '#' },
+		{ id: 1, name: 'Design review', time: '10AM', datetime: '2022-03-03T10:00', href: '#' },
+		{ id: 2, name: 'Sales meeting', time: '2PM', datetime: '2022-03-03T14:00', href: '#' },
+		{ id: 3, name: 'Date night', time: '6PM', datetime: '2022-03-08T18:00', href: '#' },
 		{
 			id: 6,
 			name: "Sam's birthday party",
 			time: '2PM',
-			datetime: '2022-01-25T14:00',
+			datetime: '2022-03-25T14:00',
 			href: '#'
 		},
 		{
 			id: 4,
 			name: 'Maple syrup museum',
 			time: '3PM',
-			datetime: '2022-01-22T15:00',
+			datetime: '2022-03-22T15:00',
 			href: '#'
 		},
-		{ id: 5, name: 'Hockey game', time: '7PM', datetime: '2022-01-22T19:00', href: '#' },
-		{ id: 8, name: 'Go looting', time: '8PM', datetime: '2022-01-22T20:00', href: '#' },
-		{ id: 9, name: 'Read Expanse', time: '9PM', datetime: '2022-01-22T21:00', href: '#' },
+		{ id: 5, name: 'Hockey game', time: '7PM', datetime: '2022-03-22T19:00', href: '#' },
+		{ id: 8, name: 'Go looting', time: '8PM', datetime: '2022-03-22T20:00', href: '#' },
+		{ id: 9, name: 'Read Expanse', time: '9PM', datetime: '2022-03-22T21:00', href: '#' },
 		{
 			id: 7,
 			name: 'Cinema with friends',
 			time: '9PM',
-			datetime: '2022-02-03T21:00',
+			datetime: '2022-04-03T21:00',
 			href: '#'
 		}
 	];
@@ -89,7 +97,7 @@ function addDummyProjectsData(calendar: Record<string, any>[]) {
 	});
 
 	// Add a single isSelected: true date
-	calendar.find((day) => day.date === '2022-01-12').isSelected = true;
+	calendar.find((day) => day.date === '2022-03-15').isSelected = true;
 }
 
 function createCalendarStore() {
@@ -108,7 +116,7 @@ function createCalendarStore() {
 		'December'
 	];
 	const currentMonthString = months[today.getMonth()]; // E.g. 'March'
-	const currentMonth = today.getMonth();
+	const currentMonth = today.getMonth() + 1;
 
 	// Generate Array of Date objects
 	// FIXME Date objs in dates[] off by 1 vs. calendar
@@ -127,12 +135,14 @@ function createCalendarStore() {
 			d.getDate().toString().padStart(2, '0'); // DD
 		const day = dateString.slice(0, 3);
 		const month = dateString.slice(4, 7);
-		const monthNum = d.getMonth();
+		const fullMonth = months[d.getMonth()];
+		const monthNum = d.getMonth() + 1;
 		const previousMonth = getPreviousMonth(d);
 		const nextMonth = getNextMonth(d);
+		const fullYear = d.getFullYear().toString();
 		const isToday = dateIsToday(d);
 		const isSelected = false;
-		const isCurrentMonth = currentMonth === d.getMonth();
+		const isCurrentMonth = currentMonth === d.getMonth() + 1;
 
 		return {
 			dateObject: d,
@@ -140,9 +150,11 @@ function createCalendarStore() {
 			dateString,
 			day,
 			month,
+			fullMonth,
 			monthNum,
-			nextMonth,
 			previousMonth,
+			nextMonth,
+			fullYear,
 			isToday,
 			isSelected,
 			isCurrentMonth,

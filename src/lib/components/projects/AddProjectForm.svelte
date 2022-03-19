@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { selectedStore, calendarStore, showModalStore } from '$lib/stores';
+	import { selectedDayStore, calendarStore, showModalStore } from '$lib/stores';
 
 	interface Project {
 		id: number;
@@ -246,7 +246,7 @@
 				...formValues,
 				id: Math.floor(Math.random() * 1000),
 				time: `${formValues.hour}${formValues.min}`,
-				datetime: `${$selectedStore.date}T${formValues.hour}:${formValues.min}`, // 	'2022-01-25T14:00'
+				datetime: `${$selectedDayStore.date}T${formValues.hour}:${formValues.min}`, // 	'2022-01-25T14:00'
 				href: '#'
 			};
 
@@ -310,7 +310,7 @@
 		<label class="input-group" for="date">
 			<span>Date</span>
 			<input
-				bind:value={$selectedStore.date}
+				bind:value={$selectedDayStore.date}
 				type="text"
 				id="date"
 				placeholder="2022-01-01"

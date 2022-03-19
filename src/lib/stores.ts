@@ -2,7 +2,9 @@ import { writable, derived } from 'svelte/store';
 // NOTE Dates are in YYYY-MM-DD format
 // NOTE Months are 0-indexed (Dec = 11, Jan = 0)
 
-const today = new Date();
+const TODAY = new Date();
+const INITIAL_YEAR: number = TODAY.getFullYear();
+const INITIAL_MONTH: number = TODAY.getMonth() + 1;
 
 function getDatesInRange(min: Date, max: Date): Date[] {
 	// = Option 1: https://stackoverflow.com/a/4413721
@@ -19,39 +21,27 @@ function getDatesInRange(min: Date, max: Date): Date[] {
 
 function dateIsToday(date: Date) {
 	return (
-		date.getDate() == today.getDate() &&
-		date.getMonth() == today.getMonth() &&
-		date.getFullYear() == today.getFullYear()
+		date.getDate() == TODAY.getDate() &&
+		date.getMonth() == TODAY.getMonth() &&
+		date.getFullYear() == TODAY.getFullYear()
 	);
 }
 
-function getNextMonth(date: Date) {
+function getNextMonth(date: Date): number {
 	// https://stackoverflow.com/a/27024351
 	// NOTE If I want 1..12, then need to + 1 at end (otherwise 0..11)
 	return ((date.getMonth() + 1) % 12) + 1;
 }
 
-function getPreviousMonth(date: Date) {
-	// = Option 1: Don't use setMonth()
+function getPreviousMonth(date: Date): number {
 	// https://stackoverflow.com/a/27024351
 	// NOTE If I want 1..12, then need to + 1 at end (otherwise 0..11)
 	return ((date.getMonth() + 11) % 12) + 1;
-
-	// = Option 2: Use setMonth()
-	// NOTE This setMonth() can alter original Date object!
-	// const newDate = date;
-	// newDate.setMonth(newDate.getMonth() - 1);
-	// // console.log('date:', date);
-	// // console.log('newDate:', newDate);
-	// return newDate.getMonth();
 }
 
-function getDaysInMonth(date: Date) {
+function getDaysInMonth(year: number, month: number): number {
 	// https://bobbyhadz.com/blog/javascript-get-number-of-days-in-month
-	const currentYear = date.getFullYear();
-	const currentMonth = date.getMonth() + 1; // 0-based index
-
-	return new Date(currentYear, currentMonth, 0).getDate();
+	return new Date(year, month, 0).getDate();
 }
 
 function addDummyProjectsData(calendar: Record<string, any>[]) {
@@ -115,13 +105,15 @@ function createCalendarStore() {
 		'November',
 		'December'
 	];
-	const currentMonthString = months[today.getMonth()]; // E.g. 'March'
-	const currentMonth = today.getMonth() + 1;
+
+	const currentMonthString = months[TODAY.getMonth()]; // E.g. 'March'
+	const currentMonth = TODAY.getMonth() + 1;
 
 	// Generate Array of Date objects
 	// FIXME Date objs in dates[] off by 1 vs. calendar
 	const dates = getDatesInRange(new Date('12-31-2021'), new Date('12-31-2022'));
 
+	// TODO Need to compute dayOfMonth and weekday
 	const calendar = dates.map((d) => {
 		// NOTE getMonth() is 0-indexed, so Dec = 11
 		const dateString: string = d.toString(); // Wed Oct 05 2011 ...
@@ -133,31 +125,41 @@ function createCalendarStore() {
 			(d.getMonth() + 1).toString().padStart(2, '0') + // MM
 			'-' +
 			d.getDate().toString().padStart(2, '0'); // DD
-		const day = dateString.slice(0, 3);
+		const weekday: string = dateString.slice(0, 3);
+		const dayOfMonth: number = d.getDate();
+		const currentMonthNumberOfDays: number = getDaysInMonth(d.getFullYear(), d.getMonth() + 1);
 		const month = dateString.slice(4, 7);
 		const fullMonth = months[d.getMonth()];
 		const monthNum = d.getMonth() + 1;
 		const previousMonth = getPreviousMonth(d);
+		const previousMonthNumberOfDays = getDaysInMonth(d.getFullYear(), previousMonth);
 		const nextMonth = getNextMonth(d);
+		const nextMonthNumberOfDays = getDaysInMonth(d.getFullYear(), nextMonth);
 		const fullYear = d.getFullYear().toString();
 		const isToday = dateIsToday(d);
 		const isSelected = false;
 		const isCurrentMonth = currentMonth === d.getMonth() + 1;
+		const isTodayCurrentMonth = TODAY.getMonth() + 1 === d.getMonth() + 1;
 
 		return {
 			dateObject: d,
 			date,
 			dateString,
-			day,
+			weekday,
+			dayOfMonth,
+			currentMonthNumberOfDays,
 			month,
 			fullMonth,
 			monthNum,
 			previousMonth,
+			previousMonthNumberOfDays,
 			nextMonth,
+			nextMonthNumberOfDays,
 			fullYear,
 			isToday,
 			isSelected,
 			isCurrentMonth,
+			isTodayCurrentMonth,
 			projects: []
 		};
 	});
@@ -166,6 +168,7 @@ function createCalendarStore() {
 	addDummyProjectsData(calendar);
 
 	// Need to return an Array of objects
+	console.log(calendar);
 	return calendar;
 }
 export const calendarStore = writable(createCalendarStore());
@@ -268,8 +271,16 @@ export const calendarStore = writable(createCalendarStore());
 
 export const showModalStore = writable(false);
 
-export const selectedStore = derived(calendarStore, ($calendarStore) =>
+export const selectedDayStore = derived(calendarStore, ($calendarStore) =>
 	$calendarStore.find((day) => day.isSelected)
+);
+
+// TODO Need to consider creating a selectedMonthStore and/or
+// a currentViewableMonthStore. The goal is to dynamically update
+// the view/UI based on selectedMonth, which is derived from
+// selectedDayStore.
+export const currentMonthStore = derived(calendarStore, ($calendarStore) =>
+	$calendarStore.filter((day) => day.isCurrentMonth)
 );
 
 export const menuItemsStore = writable([

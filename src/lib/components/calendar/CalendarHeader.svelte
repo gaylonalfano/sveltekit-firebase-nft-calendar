@@ -1,7 +1,7 @@
 <script>
 	import AddProjectForm from '$lib/components/projects/AddProjectForm.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { showModalStore, selectedStore } from '$lib/stores';
+	import { showModalStore, selectedDayStore } from '$lib/stores';
 
 	let showMenu = false;
 
@@ -26,7 +26,7 @@
 	class="relative z-20 flex items-center justify-between border-b border-gray-200 py-4 px-6 lg:flex-none"
 >
 	<h1 class="text-lg font-semibold text-gray-900">
-		<time datetime="2022-01">{$selectedStore.fullMonth} {$selectedStore.fullYear}</time>
+		<time datetime="2022-01">{$selectedDayStore.fullMonth} {$selectedDayStore.fullYear}</time>
 	</h1>
 	<div class="flex items-center">
 		<div class="flex items-center rounded-md shadow-sm md:items-stretch">

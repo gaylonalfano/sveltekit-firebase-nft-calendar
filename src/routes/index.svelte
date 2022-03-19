@@ -1,7 +1,7 @@
 <script lang="ts">
 	// NOTE Great calendar example:
 	// https://codesandbox.io/s/monthly-calendar-ur29q?file=/src/index.js */
-	import { calendarStore, selectedStore } from '$lib/stores';
+	import { calendarStore, selectedDayStore, currentMonthStore } from '$lib/stores';
 	import CalendarHeader from '$lib/components/calendar/CalendarHeader.svelte';
 	import CalendarWeekdayHeader from '$lib/components/calendar/CalendarWeekdayHeader.svelte';
 	import CalendarGrid from '$lib/components/calendar/CalendarGrid.svelte';
@@ -13,53 +13,13 @@
 	// $: selectedDay = $days.find((day) => day.isSelected); // Works
 	// let selectedDay = $days.find((day) => day.isSelected); // Doesn't update!
 	$: today = new Date();
-
-	/* function updateSelectedDay() { */
-	/* 	// console.log('Clicked!', e); // e.target is either <button> or <time> */
-	/* 	// console.log(this); // <button> */
-	/* 	// console.log(this.children); // HTMLCollection(2) */
-	/* 	// console.log(this.children[0].dateTime); // 2022-01-29 */
-	/* 	// console.log(e.target.dateTime); */
-	/* 	const selectedDate = this.children[0].dateTime; */
-
-	/* 	// === Q: How should I update the Store? Do I use update() or set()? */
-	/* 	// Using update() doesn't seem to update PERMANENTLY, but I don't */
-	/* 	// think that's Store's functionality */
-	/* 	// A: Need to use update() method directly on Store! */
-	/* 	// DON'T use $days.update()! Need to use days.update()! */
-	/* 	// https://stackoverflow.com/a/70008086 */
-	/* 	// = Attempt 1: Seems like update() isn't permanentally saving... */
-	/* 	// days.update((currentStore) => { */
-	/* 	// 	// Change previous isSelected to false */
-	/* 	// 	currentStore.find((day) => day.isSelected).isSelected = false; */
-	/* 	// 	// Update the clicked date to be the new isSelected */
-	/* 	// 	currentStore.find((day) => day.date === selectedDate).isSelected = true; */
-	/* 	// 	return currentStore; */
-	/* 	// }); */
-	/* 	// = Attempt 2: */
-	/* 	// days.update(($days) => { */
-	/* 	// 	// Change previous isSelected to false */
-	/* 	// 	$days.find((day) => day.isSelected).isSelected = false; */
-	/* 	// 	// Update the clicked date to be the new isSelected */
-	/* 	// 	$days.find((day) => day.date === selectedDate).isSelected = true; */
-	/* 	// 	return $days; */
-	/* 	// }); */
-	/* 	// === Using new calendarStore instead of days */
-	/* 	calendarStore.update(($calendarStore) => { */
-	/* 		// Change previous isSelected to false */
-	/* 		$calendarStore.find((day) => day.isSelected).isSelected = false; */
-	/* 		// Update the clicked date to be the new isSelected */
-	/* 		$calendarStore.find((day) => day.date === selectedDate).isSelected = true; */
-	/* 		return $calendarStore; */
-	/* 	}); */
-	/* } */
-
-	// $: console.log('selectedDay', selectedDay);
-	/* console.log($calendarStore); */
+	$: {
+		console.log($currentMonthStore);
+	}
 </script>
 
 <h1 class="text-3xl underline text-center py-4">
-	NFT Mint calendarStore: {$selectedStore.date}
+	NFT Mint calendarStore: {$selectedDayStore.date}
 </h1>
 <h4>Today: {today.toISOString()}</h4>
 
@@ -73,12 +33,12 @@
 			<!-- CalendarGrid -->
 			<CalendarGrid />
 		</div>
-		{#if $selectedStore?.projects.length > 0}
+		{#if $selectedDayStore?.projects.length > 0}
 			<div class="py-10 px-4 sm:px-6">
 				<ol
 					class="divide-y divide-gray-100 overflow-hidden rounded-lg bg-white text-sm shadow ring-1 ring-black ring-opacity-5"
 				>
-					{#each $selectedStore.projects as project (project.id)}
+					{#each $selectedDayStore.projects as project (project.id)}
 						<li class="group flex p-4 pr-6 focus-within:bg-gray-50 hover:bg-gray-50">
 							<div class="flex-auto">
 								<p class="font-semibold text-gray-900">{project.name}</p>

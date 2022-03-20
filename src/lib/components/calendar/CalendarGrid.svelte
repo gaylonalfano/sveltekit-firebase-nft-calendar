@@ -15,22 +15,6 @@
 		// A: Need to use update() method directly on Store!
 		// DON'T use $days.update()! Need to use days.update()!
 		// https://stackoverflow.com/a/70008086
-		// = Attempt 1: Seems like update() isn't permanentally saving...
-		// days.update((currentStore) => {
-		// 	// Change previous isSelected to false
-		// 	currentStore.find((day) => day.isSelected).isSelected = false;
-		// 	// Update the clicked date to be the new isSelected
-		// 	currentStore.find((day) => day.date === selectedDate).isSelected = true;
-		// 	return currentStore;
-		// });
-		// = Attempt 2:
-		// days.update(($days) => {
-		// 	// Change previous isSelected to false
-		// 	$days.find((day) => day.isSelected).isSelected = false;
-		// 	// Update the clicked date to be the new isSelected
-		// 	$days.find((day) => day.date === selectedDate).isSelected = true;
-		// 	return $days;
-		// });
 		// === Using new calendarStore instead of days
 		calendarStore.update(($calendarStore) => {
 			// Change previous isSelected to false

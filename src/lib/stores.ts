@@ -106,12 +106,9 @@ function createCalendarStore() {
 		'December'
 	];
 
-	const currentMonthString = months[TODAY.getMonth()]; // E.g. 'March'
-	const currentMonth = TODAY.getMonth() + 1;
-
 	// Generate Array of Date objects
 	// FIXME Date objs in dates[] off by 1 vs. calendar
-	const dates = getDatesInRange(new Date('12-31-2021'), new Date('12-31-2022'));
+	const dates = getDatesInRange(new Date('1-1-2021'), new Date('12-31-2024'));
 
 	// TODO Need to compute dayOfMonth and weekday
 	const calendar = dates.map((d) => {
@@ -128,18 +125,20 @@ function createCalendarStore() {
 		const weekday: string = dateString.slice(0, 3);
 		const dayOfMonth: number = d.getDate();
 		const currentMonthNumberOfDays: number = getDaysInMonth(d.getFullYear(), d.getMonth() + 1);
-		const month = dateString.slice(4, 7);
-		const fullMonth = months[d.getMonth()];
-		const monthNum = d.getMonth() + 1;
-		const previousMonth = getPreviousMonth(d);
-		const previousMonthNumberOfDays = getDaysInMonth(d.getFullYear(), previousMonth);
-		const nextMonth = getNextMonth(d);
-		const nextMonthNumberOfDays = getDaysInMonth(d.getFullYear(), nextMonth);
-		const fullYear = d.getFullYear().toString();
-		const isToday = dateIsToday(d);
+		const monthString: string = dateString.slice(4, 7);
+		const fullMonthString: string = months[d.getMonth()];
+		const monthNumber: number = d.getMonth() + 1;
+		const previousMonthNumber: number = getPreviousMonth(d);
+		const previousMonthNumberOfDays: number = getDaysInMonth(d.getFullYear(), previousMonthNumber);
+		const nextMonthNumber: number = getNextMonth(d);
+		const nextMonthNumberOfDays: number = getDaysInMonth(d.getFullYear(), nextMonthNumber);
+		const fullYearString: string = d.getFullYear().toString();
+		const yearNumber: number = d.getFullYear();
+		const nextYearNumber: number = d.getFullYear() + 1;
+		const previousYearNumber: number = d.getFullYear() - 1;
+		const isToday: boolean = dateIsToday(d);
 		const isSelected = false;
-		const isCurrentMonth = currentMonth === d.getMonth() + 1;
-		const isTodayCurrentMonth = TODAY.getMonth() + 1 === d.getMonth() + 1;
+		const isTodayCurrentMonth: boolean = TODAY.getMonth() + 1 === d.getMonth() + 1;
 
 		return {
 			dateObject: d,
@@ -148,17 +147,17 @@ function createCalendarStore() {
 			weekday,
 			dayOfMonth,
 			currentMonthNumberOfDays,
-			month,
-			fullMonth,
-			monthNum,
-			previousMonth,
+			monthString,
+			fullMonthString,
+			monthNumber,
+			previousMonthNumber,
 			previousMonthNumberOfDays,
-			nextMonth,
+			nextMonthNumber,
 			nextMonthNumberOfDays,
-			fullYear,
+			fullYearString,
+			yearNumber,
 			isToday,
 			isSelected,
-			isCurrentMonth,
 			isTodayCurrentMonth,
 			projects: []
 		};
@@ -173,102 +172,6 @@ function createCalendarStore() {
 }
 export const calendarStore = writable(createCalendarStore());
 
-// export const days = writable([
-// 	{ date: '2021-12-27', projects: [] },
-// 	{ date: '2021-12-28', projects: [] },
-// 	{ date: '2021-12-29', projects: [] },
-// 	{ date: '2021-12-30', projects: [] },
-// 	{ date: '2021-12-31', projects: [] },
-// 	{ date: '2022-01-01', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-02', isCurrentMonth: true, projects: [] },
-// 	{
-// 		date: '2022-01-03',
-// 		isCurrentMonth: true,
-// 		projects: [
-// 			{ id: 1, name: 'Design review', time: '10AM', datetime: '2022-01-03T10:00', href: '#' },
-// 			{ id: 2, name: 'Sales meeting', time: '2PM', datetime: '2022-01-03T14:00', href: '#' }
-// 		]
-// 	},
-// 	{ date: '2022-01-04', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-05', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-06', isCurrentMonth: true, projects: [] },
-// 	{
-// 		date: '2022-01-07',
-// 		isCurrentMonth: true,
-// 		projects: [{ id: 3, name: 'Date night', time: '6PM', datetime: '2022-01-08T18:00', href: '#' }]
-// 	},
-// 	{ date: '2022-01-08', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-09', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-10', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-11', isCurrentMonth: true, projects: [] },
-// 	{
-// 		date: '2022-01-12',
-// 		isCurrentMonth: true,
-// 		isToday: true,
-// 		projects: [
-// 			{
-// 				id: 6,
-// 				name: "Sam's birthday party",
-// 				time: '2PM',
-// 				datetime: '2022-01-25T14:00',
-// 				href: '#'
-// 			}
-// 		]
-// 	},
-// 	{ date: '2022-01-13', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-14', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-15', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-16', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-17', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-18', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-19', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-20', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-21', isCurrentMonth: true, projects: [] },
-// 	{
-// 		date: '2022-01-22',
-// 		isCurrentMonth: true,
-// 		isSelected: true,
-// 		projects: [
-// 			{
-// 				id: 4,
-// 				name: 'Maple syrup museum',
-// 				time: '3PM',
-// 				datetime: '2022-01-22T15:00',
-// 				href: '#'
-// 			},
-// 			{ id: 5, name: 'Hockey game', time: '7PM', datetime: '2022-01-22T19:00', href: '#' },
-// 			{ id: 8, name: 'Go looting', time: '8PM', datetime: '2022-01-22T20:00', href: '#' },
-// 			{ id: 9, name: 'Read Expanse', time: '9PM', datetime: '2022-01-22T21:00', href: '#' }
-// 		]
-// 	},
-// 	{ date: '2022-01-23', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-24', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-25', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-26', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-27', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-28', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-29', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-30', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-01-31', isCurrentMonth: true, projects: [] },
-// 	{ date: '2022-02-01', projects: [] },
-// 	{ date: '2022-02-02', projects: [] },
-// 	{
-// 		date: '2022-02-03',
-// 		projects: [
-// 			{
-// 				id: 7,
-// 				name: 'Cinema with friends',
-// 				time: '9PM',
-// 				datetime: '2022-02-04T21:00',
-// 				href: '#'
-// 			}
-// 		]
-// 	},
-// 	{ date: '2022-02-04', projects: [] },
-// 	{ date: '2022-02-05', projects: [] },
-// 	{ date: '2022-02-06', projects: [] }
-// ]);
-
 export const showModalStore = writable(false);
 
 export const selectedDayStore = derived(calendarStore, ($calendarStore) =>
@@ -279,8 +182,21 @@ export const selectedDayStore = derived(calendarStore, ($calendarStore) =>
 // a currentViewableMonthStore. The goal is to dynamically update
 // the view/UI based on selectedMonth, which is derived from
 // selectedDayStore.
-export const currentMonthStore = derived(calendarStore, ($calendarStore) =>
-	$calendarStore.filter((day) => day.isCurrentMonth)
+export const currentMonthStore = derived(
+	[calendarStore, selectedDayStore],
+	([$calendarStore, $selectedDayStore]) =>
+		$calendarStore.filter((day) => day.monthNumber === $selectedDayStore.monthNumber)
+);
+
+// Get selectedDayStore monthNum value and subtract to get previousMonth
+// Filter through calendarStore for previousMonth days objects
+export const previousMonthStore = derived(
+	[calendarStore, selectedDayStore],
+	([$calendarStore, $selectedDayStore]) => {
+		return $calendarStore.filter(
+			(day) => day.monthNumber === $selectedDayStore.previousMonthNumber
+		);
+	}
 );
 
 export const menuItemsStore = writable([

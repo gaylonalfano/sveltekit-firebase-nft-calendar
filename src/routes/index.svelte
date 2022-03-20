@@ -1,7 +1,12 @@
 <script lang="ts">
 	// NOTE Great calendar example:
 	// https://codesandbox.io/s/monthly-calendar-ur29q?file=/src/index.js */
-	import { calendarStore, selectedDayStore, currentMonthStore } from '$lib/stores';
+	import {
+		calendarStore,
+		selectedDayStore,
+		currentMonthStore,
+		previousMonthStore
+	} from '$lib/stores';
 	import CalendarHeader from '$lib/components/calendar/CalendarHeader.svelte';
 	import CalendarWeekdayHeader from '$lib/components/calendar/CalendarWeekdayHeader.svelte';
 	import CalendarGrid from '$lib/components/calendar/CalendarGrid.svelte';
@@ -14,7 +19,8 @@
 	// let selectedDay = $days.find((day) => day.isSelected); // Doesn't update!
 	$: today = new Date();
 	$: {
-		console.log($currentMonthStore);
+		console.log({ $currentMonthStore });
+		console.log({ $previousMonthStore });
 	}
 </script>
 

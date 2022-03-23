@@ -1,6 +1,9 @@
+import { addMonths, subMonths, getDaysInMonth } from 'date-fns';
 import { writable, derived } from 'svelte/store';
 // NOTE Dates are in YYYY-MM-DD format
 // NOTE Months are 0-indexed (Dec = 11, Jan = 0)
+// TODO Continue to swap out for date-fns functions to build calendarStore
+// After that, need to build the currentMonthStore, previousMonthStore, nextMonthStore, etc.
 
 const TODAY = new Date();
 const INITIAL_YEAR: number = TODAY.getFullYear();
@@ -39,10 +42,10 @@ function getPreviousMonth(date: Date): number {
 	return ((date.getMonth() + 11) % 12) + 1;
 }
 
-function getDaysInMonth(year: number, month: number): number {
-	// https://bobbyhadz.com/blog/javascript-get-number-of-days-in-month
-	return new Date(year, month, 0).getDate();
-}
+// function getDaysInMonth(year: number, month: number): number {
+// 	// https://bobbyhadz.com/blog/javascript-get-number-of-days-in-month
+// 	return new Date(year, month, 0).getDate();
+// }
 
 function addDummyProjectsData(calendar: Record<string, any>[]) {
 	const dummyDates = ['2022-03-03', '2022-03-07', '2022-03-12', '2022-03-22', '2022-04-03'];
@@ -124,17 +127,22 @@ function createCalendarStore() {
 			d.getDate().toString().padStart(2, '0'); // DD
 		const weekday: string = dateString.slice(0, 3);
 		const dayOfMonth: number = d.getDate();
-		const currentMonthNumberOfDays: number = getDaysInMonth(d.getFullYear(), d.getMonth() + 1);
+		// const currentMonthNumberOfDays: number = getDaysInMonth(d.getFullYear(), d.getMonth() + 1);
+		const currentMonthNumberOfDays = getDaysInMonth(d);
 		const monthString: string = dateString.slice(4, 7);
 		const fullMonthString: string = months[d.getMonth()];
 		const monthNumber: number = d.getMonth() + 1;
 		const previousMonthNumber: number = getPreviousMonth(d);
-		const previousMonthNumberOfDays: number = getDaysInMonth(d.getFullYear(), previousMonthNumber);
+		const previousMonthDate: Date = subMonths(d, 1);
+		const previousMonthNumberOfDays: number = getDaysInMonth(
+			new Date(d.getFullYear(), d.getMonth() - 1)
+		);
 		const nextMonthNumber: number = getNextMonth(d);
 		const nextMonthNumberOfDays: number = getDaysInMonth(d.getFullYear(), nextMonthNumber);
 		const fullYearString: string = d.getFullYear().toString();
 		const yearNumber: number = d.getFullYear();
 		const nextYearNumber: number = d.getFullYear() + 1;
+		const nextMonthDate: Date = addMonths(d, 1);
 		const previousYearNumber: number = d.getFullYear() - 1;
 		const isToday: boolean = dateIsToday(d);
 		const isSelected = false;
@@ -151,8 +159,10 @@ function createCalendarStore() {
 			fullMonthString,
 			monthNumber,
 			previousMonthNumber,
+			previousMonthDate,
 			previousMonthNumberOfDays,
 			nextMonthNumber,
+			nextMonthDate,
 			nextMonthNumberOfDays,
 			fullYearString,
 			yearNumber,

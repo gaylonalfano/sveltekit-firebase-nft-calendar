@@ -11,17 +11,11 @@
 </script>
 
 <script>
-	import { days, selectedDayStore } from '$lib/stores';
+	import { calendarStore, selectedDayStore } from '$lib/stores';
 	export let projectId;
 
-	const day = $days.filter((d) => d.date === $selectedDayStore.date)[0];
-	const project = day.projects.find((p) => p.id === +projectId);
+	/* const day = $days.filter((d) => d.date === $selectedDayStore.date)[0]; */
+	/* const project = day.projects.find((p) => p.id === +projectId); */
 	// console.log({ day });
 	// console.log({ project });
 </script>
-
-<h1>{project.name}</h1>
-<ul>
-	<li>{project.id}</li>
-	<li>{project.datetime}</li>
-</ul>

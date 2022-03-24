@@ -26,9 +26,7 @@
 	class="relative z-20 flex items-center justify-between border-b border-gray-200 py-4 px-6 lg:flex-none"
 >
 	<h1 class="text-lg font-semibold text-gray-900">
-		<time datetime="2022-01"
-			>{$selectedDayStore.fullMonthString} {$selectedDayStore.fullYearString}</time
-		>
+		<time datetime="2022-01">FIXME</time>
 	</h1>
 	<div class="flex items-center">
 		<div class="flex items-center rounded-md shadow-sm md:items-stretch">

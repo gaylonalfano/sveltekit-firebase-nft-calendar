@@ -3,9 +3,9 @@
 	// https://codesandbox.io/s/monthly-calendar-ur29q?file=/src/index.js */
 	import {
 		calendarStore,
-		selectedDayStore,
-		currentMonthStore,
-		previousMonthStore
+		selectedDayStore
+		// currentMonthStore,
+		// previousMonthStore
 	} from '$lib/stores';
 	import CalendarHeader from '$lib/components/calendar/CalendarHeader.svelte';
 	import CalendarWeekdayHeader from '$lib/components/calendar/CalendarWeekdayHeader.svelte';
@@ -18,16 +18,13 @@
 	// $: selectedDay = $days.find((day) => day.isSelected); // Works
 	// let selectedDay = $days.find((day) => day.isSelected); // Doesn't update!
 	$: today = new Date();
-	$: {
-		console.log({ $currentMonthStore });
-		console.log({ $previousMonthStore });
-	}
+	// $: {
+	// 	console.log({ $currentMonthStore });
+	// 	console.log({ $previousMonthStore });
+	// }
 </script>
 
-<h1 class="text-3xl underline text-center py-4">
-	NFT Mint calendarStore: {$selectedDayStore.date}
-</h1>
-<h4>Today: {today.toISOString()}</h4>
+<h1 class="text-3xl underline text-center py-4">NFT Mint calendarStore</h1>
 
 <!-- This example requires Tailwind CSS v2.0+ -->
 <div class="max-w-screen-xl min-w-screen-sm">

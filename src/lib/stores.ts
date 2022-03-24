@@ -1,13 +1,36 @@
-import { addMonths, subMonths, getDaysInMonth } from 'date-fns';
+// FIXME Error using dayjs + sveltekit + vite:
+// https://github.com/sveltejs/kit/issues/699
+
+// = Attempt 1: ERROR: vite_ssr .weekday is not a function
+// import dayjs from 'dayjs';
+// import weekday from 'dayjs/plugin/weekday';
+// import weekOfYear from 'dayjs/plugin/weekOfYear';
+
+// = Attempt 2: ERROR: vite_ssr .weekday is not a function
+// import dayjs from 'dayjs';
+// import weekday from 'dayjs/plugin/weekday.js';
+// import weekOfYear from 'dayjs/plugin/weekOfYear.js';
+
+// = Attempt 3: ERROR: Cannot import outside of module
+// import dayjsCJS from 'dayjs';
+// import dayjsESM from 'dayjs/esm';
+// const dayjs = !dayjsCJS ? dayjsESM : dayjsCJS;
+
+// = Attempt 4: SOLVED! Apparently a TS issue
+// https://lifesaver.codes/answer/typeerror-dayjs-1-default-is-not-a-function-475
+import dayjs from 'dayjs';
+import weekday from 'dayjs/plugin/weekday';
+dayjs.extend(weekday);
+
 import { writable, derived } from 'svelte/store';
 // NOTE Dates are in YYYY-MM-DD format
 // NOTE Months are 0-indexed (Dec = 11, Jan = 0)
-// TODO Continue to swap out for date-fns functions to build calendarStore
+// TODO Continue to swap out for dayjs functions to build calendarStore
 // After that, need to build the currentMonthStore, previousMonthStore, nextMonthStore, etc.
 
-const TODAY = new Date();
-const INITIAL_YEAR: number = TODAY.getFullYear();
-const INITIAL_MONTH: number = TODAY.getMonth() + 1;
+const TODAY: string = dayjs().format('YYYY-MM-DD');
+const INITIAL_YEAR: string = dayjs().format('YYYY');
+const INITIAL_MONTH: string = dayjs().format('M');
 
 function getDatesInRange(min: Date, max: Date): Date[] {
 	// = Option 1: https://stackoverflow.com/a/4413721
@@ -22,13 +45,14 @@ function getDatesInRange(min: Date, max: Date): Date[] {
 	return dates;
 }
 
-function dateIsToday(date: Date) {
-	return (
-		date.getDate() == TODAY.getDate() &&
-		date.getMonth() == TODAY.getMonth() &&
-		date.getFullYear() == TODAY.getFullYear()
-	);
-}
+// function dateIsToday(date: Date) {
+// 	// NOTE Using dayjs would be: if (day.date === TODAY)
+// 	return (
+// 		date.getDate() == TODAY.getDate() &&
+// 		date.getMonth() == TODAY.getMonth() &&
+// 		date.getFullYear() == TODAY.getFullYear()
+// 	);
+// }
 
 function getNextMonth(date: Date): number {
 	// https://stackoverflow.com/a/27024351
@@ -42,10 +66,14 @@ function getPreviousMonth(date: Date): number {
 	return ((date.getMonth() + 11) % 12) + 1;
 }
 
-// function getDaysInMonth(year: number, month: number): number {
-// 	// https://bobbyhadz.com/blog/javascript-get-number-of-days-in-month
-// 	return new Date(year, month, 0).getDate();
-// }
+function getDaysInMonth(year: number, month: number): number {
+	// https://bobbyhadz.com/blog/javascript-get-number-of-days-in-month
+	return new Date(year, month, 0).getDate();
+}
+
+function getNumberOfDaysInMonth(year: string, month: string): number {
+	return dayjs(`${year}-${month}-01`).daysInMonth();
+}
 
 function addDummyProjectsData(calendar: Record<string, any>[]) {
 	const dummyDates = ['2022-03-03', '2022-03-07', '2022-03-12', '2022-03-22', '2022-04-03'];
@@ -93,6 +121,92 @@ function addDummyProjectsData(calendar: Record<string, any>[]) {
 	calendar.find((day) => day.date === '2022-03-15').isSelected = true;
 }
 
+function getWeekday(date: string): number {
+	return dayjs(date).weekday();
+}
+
+function createDaysForCurrentMonth(year: string, month: string): Record<string, any>[] {
+	// Return an Array of single Day objects
+	return [...Array(getNumberOfDaysInMonth(year, month))].map((day, index) => {
+		// Return the Day objects we want to work with
+		return {
+			date: dayjs(`${year}-${month}-${index + 1}`).format('YYYY-MM-DD'),
+			dayOfMonth: index + 1,
+			isCurrentMonth: true,
+			isSelected: false,
+			projects: []
+		};
+	});
+}
+
+function createFillerDaysForPreviousMonth(year: string, month: string): Record<string, any>[] {
+	const firstDayOfTheCurrentMonthWeekday: number = getWeekday(currentMonthDays[0].date);
+	const previousMonth: dayjs.Dayjs = dayjs(`${year}-${month}-01`).subtract(1, 'month'); // Cloned Dayjs object
+
+	// Account for first day of the month on a Sunday (firstDayOfTheCurrentMonthWeekday === 0)
+	// E.g. If firstDayOfTheCurrentMonthWeekday is Wed, then 3 - 1 = 2, so 2 days visible (Mon, Tue),
+	// since the UI starts with Monday
+	const visibleNumberOfDaysFromPreviousMonth = firstDayOfTheCurrentMonthWeekday
+		? firstDayOfTheCurrentMonthWeekday - 1
+		: 6;
+
+	const previousMonthLastMondayDayOfMonth: number = dayjs(currentMonthDays[0].date)
+		.subtract(visibleNumberOfDaysFromPreviousMonth, 'day')
+		.date();
+
+	// Return an Array of single Day objects
+	return [...Array(visibleNumberOfDaysFromPreviousMonth)].map((day, index) => {
+		return {
+			date: dayjs(
+				// Q: Why use previousMonth.month() + 1? Is it 0-indexed?
+				// A: Yes, month() is 0-indexed so Jan is 0, but dayjs() takes string YYYY-MM-DD format
+				`${previousMonth.year()}-${previousMonth.month() + 1}-${
+					previousMonthLastMondayDayOfMonth + index
+				}`
+			).format('YYYY-MM-DD'),
+			dayOfMonth: previousMonthLastMondayDayOfMonth + index,
+			isCurrentMonth: false,
+			isSelected: false,
+			projects: []
+		};
+	});
+}
+
+function createFillerDaysForNextMonth(year: string, month: string): Record<string, any>[] {
+	const lastDayOfTheCurrentMonthWeekday: number = getWeekday(
+		`${year}-${month}-${currentMonthDays.length}`
+	); // 0 = Sunday, 6 = Saturday
+	// FIXME We're basically passing the INITIAL_YEAR, INITIAL_MONTH as args to this function.
+	// From there, we're build an Array of visible days from the next month.
+	const nextMonth: dayjs.Dayjs = dayjs(`${year}-${month}-01`).add(1, 'month'); // Cloned Dayjs object
+
+	// Account for last day of the month on a Sunday (lastDayOfTheCurrentMonthWeekday === 0)
+	const visibleNumberOfDaysFromNextMonth = lastDayOfTheCurrentMonthWeekday
+		? 7 - lastDayOfTheCurrentMonthWeekday
+		: lastDayOfTheCurrentMonthWeekday;
+
+	return [...Array(visibleNumberOfDaysFromNextMonth)].map((day, index) => {
+		return {
+			// 'index' is 0-based, so we're + 1 to get dayOfMonth
+			date: dayjs(`${nextMonth.year()}-${nextMonth.month() + 1}-${index + 1}`).format('YYYY-MM-DD'),
+			dayOfMonth: index + 1,
+			isCurrentMonth: false,
+			isSelected: false,
+			projects: []
+		};
+	});
+}
+
+let currentMonthDays = createDaysForCurrentMonth(INITIAL_YEAR, INITIAL_MONTH);
+let previousMonthFillerDays = createFillerDaysForPreviousMonth(INITIAL_YEAR, INITIAL_MONTH);
+let nextMonthFillerDays = createFillerDaysForNextMonth(INITIAL_YEAR, INITIAL_MONTH);
+// NOTE Could turn this 'days' into a currentMonthViewStore or currentMonthCalendarDays perhaps
+let currentMonthCalendarDays = [
+	...previousMonthFillerDays,
+	...currentMonthDays,
+	...nextMonthFillerDays
+];
+
 function createCalendarStore() {
 	const months = [
 		'January',
@@ -125,25 +239,20 @@ function createCalendarStore() {
 			(d.getMonth() + 1).toString().padStart(2, '0') + // MM
 			'-' +
 			d.getDate().toString().padStart(2, '0'); // DD
-		const weekday: string = dateString.slice(0, 3);
+		const weekdayString: string = dateString.slice(0, 3);
 		const dayOfMonth: number = d.getDate();
-		// const currentMonthNumberOfDays: number = getDaysInMonth(d.getFullYear(), d.getMonth() + 1);
-		const currentMonthNumberOfDays = getDaysInMonth(d);
+		const currentMonthNumberOfDays: number = getDaysInMonth(d.getFullYear(), d.getMonth() + 1);
 		const monthString: string = dateString.slice(4, 7);
 		const fullMonthString: string = months[d.getMonth()];
 		const monthNumber: number = d.getMonth() + 1;
 		const previousMonthNumber: number = getPreviousMonth(d);
-		const previousMonthDate: Date = subMonths(d, 1);
-		const previousMonthNumberOfDays: number = getDaysInMonth(
-			new Date(d.getFullYear(), d.getMonth() - 1)
-		);
+		// const previousMonthNumberOfDays: number = getDaysInMonth(
+		// 	new Date(d.getFullYear(), d.getMonth() - 1)
+		// );
 		const nextMonthNumber: number = getNextMonth(d);
 		const nextMonthNumberOfDays: number = getDaysInMonth(d.getFullYear(), nextMonthNumber);
 		const fullYearString: string = d.getFullYear().toString();
 		const yearNumber: number = d.getFullYear();
-		const nextYearNumber: number = d.getFullYear() + 1;
-		const nextMonthDate: Date = addMonths(d, 1);
-		const previousYearNumber: number = d.getFullYear() - 1;
 		const isToday: boolean = dateIsToday(d);
 		const isSelected = false;
 		const isTodayCurrentMonth: boolean = TODAY.getMonth() + 1 === d.getMonth() + 1;
@@ -152,17 +261,14 @@ function createCalendarStore() {
 			dateObject: d,
 			date,
 			dateString,
-			weekday,
+			weekdayString,
 			dayOfMonth,
 			currentMonthNumberOfDays,
 			monthString,
 			fullMonthString,
 			monthNumber,
 			previousMonthNumber,
-			previousMonthDate,
-			previousMonthNumberOfDays,
 			nextMonthNumber,
-			nextMonthDate,
 			nextMonthNumberOfDays,
 			fullYearString,
 			yearNumber,
@@ -180,7 +286,10 @@ function createCalendarStore() {
 	console.log(calendar);
 	return calendar;
 }
-export const calendarStore = writable(createCalendarStore());
+// export const calendarStore = writable(createCalendarStore());
+// NOTE Anything with 'Calendar' represents the view (what's visible)
+// If it's simply currentMonthDays, then it does NOT include filler days
+export const calendarStore = writable(currentMonthCalendarDays);
 
 export const showModalStore = writable(false);
 
@@ -192,22 +301,22 @@ export const selectedDayStore = derived(calendarStore, ($calendarStore) =>
 // a currentViewableMonthStore. The goal is to dynamically update
 // the view/UI based on selectedMonth, which is derived from
 // selectedDayStore.
-export const currentMonthStore = derived(
-	[calendarStore, selectedDayStore],
-	([$calendarStore, $selectedDayStore]) =>
-		$calendarStore.filter((day) => day.monthNumber === $selectedDayStore.monthNumber)
-);
+// export const currentMonthStore = derived(
+// 	[calendarStore, selectedDayStore],
+// 	([$calendarStore, $selectedDayStore]) =>
+// 		$calendarStore.filter((day) => day.monthNumber === $selectedDayStore.monthNumber)
+// );
 
 // Get selectedDayStore monthNum value and subtract to get previousMonth
 // Filter through calendarStore for previousMonth days objects
-export const previousMonthStore = derived(
-	[calendarStore, selectedDayStore],
-	([$calendarStore, $selectedDayStore]) => {
-		return $calendarStore.filter(
-			(day) => day.monthNumber === $selectedDayStore.previousMonthNumber
-		);
-	}
-);
+// export const previousMonthStore = derived(
+// 	[calendarStore, selectedDayStore],
+// 	([$calendarStore, $selectedDayStore]) => {
+// 		return $calendarStore.filter(
+// 			(day) => day.monthNumber === $selectedDayStore.previousMonthNumber
+// 		);
+// 	}
+// );
 
 export const menuItemsStore = writable([
 	{ id: '0', name: 'Day view', href: '#', active: false },

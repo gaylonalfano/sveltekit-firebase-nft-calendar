@@ -20,7 +20,9 @@
 // https://lifesaver.codes/answer/typeerror-dayjs-1-default-is-not-a-function-475
 import dayjs from 'dayjs';
 import weekday from 'dayjs/plugin/weekday';
+import isToday from 'dayjs/plugin/isToday';
 dayjs.extend(weekday);
+dayjs.extend(isToday);
 
 import { writable, derived } from 'svelte/store';
 // NOTE Dates are in YYYY-MM-DD format
@@ -133,6 +135,7 @@ function createDaysForCurrentMonth(year: string, month: string): Record<string, 
 			date: dayjs(`${year}-${month}-${index + 1}`).format('YYYY-MM-DD'),
 			dayOfMonth: index + 1,
 			isCurrentMonth: true,
+			isToday: dayjs().isToday(),
 			isSelected: false,
 			projects: []
 		};
@@ -166,6 +169,7 @@ function createFillerDaysForPreviousMonth(year: string, month: string): Record<s
 			).format('YYYY-MM-DD'),
 			dayOfMonth: previousMonthLastMondayDayOfMonth + index,
 			isCurrentMonth: false,
+			isToday: false,
 			isSelected: false,
 			projects: []
 		};
@@ -191,21 +195,28 @@ function createFillerDaysForNextMonth(year: string, month: string): Record<strin
 			date: dayjs(`${nextMonth.year()}-${nextMonth.month() + 1}-${index + 1}`).format('YYYY-MM-DD'),
 			dayOfMonth: index + 1,
 			isCurrentMonth: false,
+			isToday: false,
 			isSelected: false,
 			projects: []
 		};
 	});
 }
 
-let currentMonthDays = createDaysForCurrentMonth(INITIAL_YEAR, INITIAL_MONTH);
-let previousMonthFillerDays = createFillerDaysForPreviousMonth(INITIAL_YEAR, INITIAL_MONTH);
-let nextMonthFillerDays = createFillerDaysForNextMonth(INITIAL_YEAR, INITIAL_MONTH);
+const currentMonthDays = createDaysForCurrentMonth(INITIAL_YEAR, INITIAL_MONTH);
+const previousMonthFillerDays = createFillerDaysForPreviousMonth(INITIAL_YEAR, INITIAL_MONTH);
+const nextMonthFillerDays = createFillerDaysForNextMonth(INITIAL_YEAR, INITIAL_MONTH);
 // NOTE Could turn this 'days' into a currentMonthViewStore or currentMonthCalendarDays perhaps
-let currentMonthCalendarDays = [
+const currentMonthCalendarDays = [
 	...previousMonthFillerDays,
 	...currentMonthDays,
 	...nextMonthFillerDays
 ];
+
+function createCalendarMonthStore(year: string = INITIAL_YEAR, month: string = INITIAL_MONTH) {
+	// TODO Need to create a flexible function that recreates the 'currentMonthCalendarDays' Array
+	// so that I can convert into a Store. May still be a use case for using derived Stores
+	// to track previousMonth/nextMonth, but we'll see.
+}
 
 function createCalendarStore() {
 	const months = [
@@ -225,7 +236,7 @@ function createCalendarStore() {
 
 	// Generate Array of Date objects
 	// FIXME Date objs in dates[] off by 1 vs. calendar
-	const dates = getDatesInRange(new Date('1-1-2021'), new Date('12-31-2024'));
+	const dates = getDatesInRange(new Date('1-1-2022'), new Date('12-31-2022'));
 
 	// TODO Need to compute dayOfMonth and weekday
 	const calendar = dates.map((d) => {
@@ -253,9 +264,9 @@ function createCalendarStore() {
 		const nextMonthNumberOfDays: number = getDaysInMonth(d.getFullYear(), nextMonthNumber);
 		const fullYearString: string = d.getFullYear().toString();
 		const yearNumber: number = d.getFullYear();
-		const isToday: boolean = dateIsToday(d);
+		// const isToday: boolean = dateIsToday(d);
 		const isSelected = false;
-		const isTodayCurrentMonth: boolean = TODAY.getMonth() + 1 === d.getMonth() + 1;
+		// const isTodayCurrentMonth: boolean = TODAY.getMonth() + 1 === d.getMonth() + 1;
 
 		return {
 			dateObject: d,
@@ -272,9 +283,9 @@ function createCalendarStore() {
 			nextMonthNumberOfDays,
 			fullYearString,
 			yearNumber,
-			isToday,
+			// isToday,
 			isSelected,
-			isTodayCurrentMonth,
+			// isTodayCurrentMonth,
 			projects: []
 		};
 	});
@@ -290,8 +301,6 @@ function createCalendarStore() {
 // NOTE Anything with 'Calendar' represents the view (what's visible)
 // If it's simply currentMonthDays, then it does NOT include filler days
 export const calendarStore = writable(currentMonthCalendarDays);
-
-export const showModalStore = writable(false);
 
 export const selectedDayStore = derived(calendarStore, ($calendarStore) =>
 	$calendarStore.find((day) => day.isSelected)
@@ -317,26 +326,3 @@ export const selectedDayStore = derived(calendarStore, ($calendarStore) =>
 // 		);
 // 	}
 // );
-
-export const menuItemsStore = writable([
-	{ id: '0', name: 'Day view', href: '#', active: false },
-	{ id: '1', name: 'Week view', href: '#', active: true },
-	{ id: '2', name: 'Month view', href: '#', active: false },
-	{ id: '3', name: 'Year view', href: '#', active: false }
-]);
-// NOTE Max introduced the concept of exporting an object that
-// has a Store.subscribe property, along with other helper functions:
-// NOTE You must FIRST create a default Store (const cart = writable([]))
-// const customCart = {
-//	subscribe: cart.subscribe,
-//	addItem: (item) => {
-//		cart.update(items => {
-//			return [...items, item];
-//		});
-//	},
-//	removeItem: (id) => {
-//		cart.update(items => {
-//			return items.filter(item => item.id !== id);
-//		});
-//	}
-// }

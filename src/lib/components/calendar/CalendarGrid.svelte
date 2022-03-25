@@ -1,5 +1,5 @@
 <script>
-	import { calendarStore } from '$lib/stores';
+	import { calendarStore } from '$lib/stores/calendar-store';
 
 	function updateSelectedDay() {
 		// console.log('Clicked!', e); // e.target is either <button> or <time>

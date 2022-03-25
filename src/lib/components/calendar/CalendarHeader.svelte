@@ -1,7 +1,7 @@
 <script>
 	import AddProjectForm from '$lib/components/projects/AddProjectForm.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { showModalStore, selectedDayStore } from '$lib/stores';
+	import { showModalStore } from '$lib/stores/modal-store';
 
 	let showMenu = false;
 

@@ -6,7 +6,7 @@
 		selectedDayStore
 		// currentMonthStore,
 		// previousMonthStore
-	} from '$lib/stores';
+	} from '$lib/stores/calendar-store';
 	import CalendarHeader from '$lib/components/calendar/CalendarHeader.svelte';
 	import CalendarWeekdayHeader from '$lib/components/calendar/CalendarWeekdayHeader.svelte';
 	import CalendarGrid from '$lib/components/calendar/CalendarGrid.svelte';

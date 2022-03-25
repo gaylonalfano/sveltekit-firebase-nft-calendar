@@ -1,5 +1,5 @@
 <script>
-	import { menuItemsStore } from '$lib/stores';
+	import { menuItemsStore } from '$lib/stores/menu-store';
 	import MenuItem from '$lib/components/MenuItem.svelte';
 	// let menuItems = [];
 	// Q: Probably should consider using a Store for menuItems

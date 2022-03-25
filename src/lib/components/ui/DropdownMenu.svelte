@@ -1,5 +1,5 @@
 <script>
-	import { menuItemsStore } from '$lib/stores';
+	import { menuItemsStore } from '$lib/stores/menu-store';
 	let active = false;
 
 	// NOTE Best practice is to separate PRESENTATIONAL components

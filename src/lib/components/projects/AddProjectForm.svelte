@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { selectedDayStore, calendarStore, showModalStore } from '$lib/stores';
+	import { selectedDayStore, calendarStore } from '$lib/stores/calendar-store';
+	import { showModalStore } from '$lib/stores/modal-store';
 
 	interface Project {
 		id: number;

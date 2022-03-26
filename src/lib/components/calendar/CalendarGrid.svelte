@@ -1,5 +1,16 @@
 <script>
-	import { calendarStore } from '$lib/stores/calendar-store';
+	import dayjs from 'dayjs';
+	import { calendarStore, createCurrentMonthCalendarDays } from '$lib/stores/calendar-store';
+
+	let selectedMonth;
+
+	// Q: Can/should I build the initializeMonthSelectors() function here
+	// or inside the calendar-store.ts file?
+	function initializeMonthSelectors() {
+		// Select the previous/next month buttons
+		// On click need to update the selectedMonthStore...???
+		// I'm leaning toward keeping it all inside the store file...
+	}
 
 	function updateSelectedDay() {
 		// console.log('Clicked!', e); // e.target is either <button> or <time>
@@ -15,13 +26,26 @@
 		// A: Need to use update() method directly on Store!
 		// DON'T use $days.update()! Need to use days.update()!
 		// https://stackoverflow.com/a/70008086
-		// === Using new calendarStore instead of days
+		// === Using new WRITABLE calendarStore instead of days
 		calendarStore.update(($calendarStore) => {
 			// Change previous isSelected to false
 			$calendarStore.find((day) => day.isSelected).isSelected = false;
 			// Update the clicked date to be the new isSelected
 			$calendarStore.find((day) => day.date === selectedDate).isSelected = true;
 			return $calendarStore;
+		});
+	}
+
+	function updateCalendar() {
+		// Maybe need to trigger a calendarStore.update() based on new selectedMonth???
+		selectedMonth = dayjs(selectedMonth).subtract(1, 'month');
+		// Update the calendarStore
+		calendarStore.update((calendarStore) => {
+			calendarStore = createCurrentMonthCalendarDays(
+				selectedMonth.format('YYYY'),
+				selectedMonth.format('MM')
+			);
+			return calendarStore;
 		});
 	}
 </script>

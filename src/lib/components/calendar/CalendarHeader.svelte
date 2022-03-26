@@ -2,9 +2,9 @@
 	import AddProjectForm from '$lib/components/projects/AddProjectForm.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { showModalStore } from '$lib/stores/modal-store';
+	import { selectedMonthStore } from '$lib/stores/calendar-store';
 
 	let showMenu = false;
-
 	// Initialize modal state and content
 	// let showModal = false;
 	let modalContent;
@@ -19,14 +19,22 @@
 		$showModalStore = !$showModalStore;
 	}
 
+	function updateSelectedMonth() {
+		// Update the view
+		// selectedMonthStore.update(($selectedMonthStore) => ($selectedMonthStore = selectedMonth)); */
+	}
+
 	$: console.log('showModalStore?', $showModalStore);
+	$: console.log('selectedMonthStore', $selectedMonthStore.date);
 </script>
 
 <header
 	class="relative z-20 flex items-center justify-between border-b border-gray-200 py-4 px-6 lg:flex-none"
 >
 	<h1 class="text-lg font-semibold text-gray-900">
-		<time datetime="2022-01">FIXME</time>
+		<time datetime="2022-01"
+			>{$selectedMonthStore.format('MMMM')} {$selectedMonthStore.format('D')}</time
+		>
 	</h1>
 	<div class="flex items-center">
 		<div class="flex items-center rounded-md shadow-sm md:items-stretch">

@@ -40,7 +40,7 @@ const TODAY: string = dayjs().format('YYYY-MM-DD');
 const INITIAL_YEAR: string = dayjs().format('YYYY');
 const INITIAL_MONTH: string = dayjs().format('M');
 
-let selectedMonth;
+const selectedMonth: dayjs.Dayjs = dayjs(new Date(INITIAL_YEAR, INITIAL_MONTH - 1, 1));
 let currentMonthDays: Record<string, any>[];
 let previousMonthFillerDays: Record<string, any>[];
 let nextMonthFillerDays: Record<string, any>[];
@@ -107,7 +107,8 @@ function createDaysForCurrentMonth(year: string, month: string): Record<string, 
 			date: dayjs(`${year}-${month}-${index + 1}`).format('YYYY-MM-DD'),
 			dayOfMonth: index + 1,
 			isCurrentMonth: true,
-			isToday: dayjs().isToday(),
+			// isToday: dayjs().isToday(), // ALL are true...
+			isToday: dayjs(`${year}-${month}-${index + 1}`).format('YYYY-MM-DD') === TODAY ? true : false,
 			isSelected: false,
 			projects: []
 		};
@@ -174,7 +175,12 @@ function createFillerDaysForNextMonth(year: string, month: string): Record<strin
 	});
 }
 
-function createCurrentMonthCalendarDays(
+// TODO Could I pass $selectedMonthStore.format("YYYY") and $selectedMonthStore.format("M")
+// as the args to this? Thinking of using a derived store... like, the calendarStore
+// is derived from the selectedMonthStore somehow. Would need to initialize the
+// selectedMonthStore store here first, though. I mean, I am using Svelte, so why
+// not use Stores?
+export function createCurrentMonthCalendarDays(
 	year: string = INITIAL_YEAR,
 	month: string = INITIAL_MONTH
 ): Record<string, any>[] {
@@ -197,8 +203,50 @@ function createCurrentMonthCalendarDays(
 	return currentMonthCalendarDays;
 }
 
+// UPDATE: May just handle this directly in the CalendarGrid.svelte component
+// function initializeMonthSelectors() {
+// 	// Allow user to navigate between different months and recreate
+// 	// the new currentMonthCalendarDays view, etc.
+// }
+
+export const selectedMonthStore = writable(selectedMonth);
 // NOTE If it's simply currentMonthDays, then it does NOT include filler days
-export const calendarStore = writable(createCurrentMonthCalendarDays());
+export const calendarStore = writable(
+	// createCurrentMonthCalendarDays(
+	// 	$selectedMonthStore.format('YYYY'), // Error: Cannot find $selectedMonthStore
+	// 	$selectedMonthStore.format('MM') // Error: Cannot find $selectedMonthStore
+	// )
+	createCurrentMonthCalendarDays(selectedMonth.format('YYYY'), selectedMonth.format('MM'))
+);
+
+// FIXME
+// Q: If we use derived, then this becomes READABLE, which means
+// when we updated selectedDayStore (in Grid), then we cannot use
+// calendarStore.UPDATE() on readable! But, do I need to update
+// calendarStore whenever we selected a new day??? The month is already
+// rendered. But how would I update day.isSelected?
+// export const calendarStore = derived(selectedMonthStore, ($selectedMonthStore) => {
+// 	return createCurrentMonthCalendarDays(
+// 		$selectedMonthStore.format('YYYY'),
+// 		$selectedMonthStore.format('M')
+// 	);
+// });
+
+// Q: What if I try to create a CUSTOM store function?
+// https://svelte.dev/tutorial/custom-stores
+function createCalendarStore() {
+	const { subscribe, update } = writable([]);
+
+	return {
+		subscribe,
+		updateCalendar: (selectedMonth: dayjs.Dayjs) =>
+			update(() =>
+				createCurrentMonthCalendarDays(selectedMonth.format('YYYY'), selectedMonth.format('MM'))
+			)
+	};
+}
+
+export const customCalendarStore = createCalendarStore();
 
 export const selectedDayStore = derived(calendarStore, ($calendarStore) =>
 	$calendarStore.find((day) => day.isSelected)
@@ -344,4 +392,23 @@ export const selectedDayStore = derived(calendarStore, ($calendarStore) =>
 // 	// Need to return an Array of objects
 // 	console.log(calendar);
 // 	return calendar;
+// }
+
+// NOTE Max introduced the concept of CUSTOM STORES exporting an object that
+// has a Store.subscribe property, along with other helper functions:
+// NOTE You must FIRST create a default Store (const cart = writable([]))
+//
+// const cart = writable([]);
+// const customCart = {
+//	subscribe: cart.subscribe,
+//	addItem: (item) => {
+//		cart.update(items => {
+//			return [...items, item];
+//		});
+//	},
+//	removeItem: (id) => {
+//		cart.update(items => {
+//			return items.filter(item => item.id !== id);
+//		});
+//	}
 // }

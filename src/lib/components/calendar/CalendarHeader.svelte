@@ -47,17 +47,17 @@
 		// - All this means what?? My Store isn't updating obviously........
 		// Update the calendarStore
 		// = Use update()?
-		calendarStore.update(($calendarStore: Record<string, any>[]) => {
-			$calendarStore = createDaysForCurrentMonthCalendar(
-				selectedMonth.format('YYYY'),
-				selectedMonth.format('MM')
-			);
-			return $calendarStore;
-		});
+		// calendarStore.update(($calendarStore: Record<string, any>[]) => {
+		// 	$calendarStore = createDaysForCurrentMonthCalendar(
+		// 		selectedMonth.format('YYYY'),
+		// 		selectedMonth.format('MM')
+		// 	);
+		// 	return $calendarStore;
+		// });
 		// = Use set()?
-		// calendarStore.set(
-		// 	createDaysForCurrentMonthCalendar(selectedMonth.format('YYYY'), selectedMonth.format('MM'))
-		// );
+		calendarStore.set(
+			createDaysForCurrentMonthCalendar(selectedMonth.format('YYYY'), selectedMonth.format('MM'))
+		);
 	}
 
 	function handleNextMonthSelected() {

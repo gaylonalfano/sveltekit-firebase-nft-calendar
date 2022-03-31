@@ -47,34 +47,35 @@
 		// - All this means what?? My Store isn't updating obviously........
 		// Update the calendarStore
 		// = Use update()?
-		// calendarStore.update(($calendarStore: Record<string, any>[]) => {
-		// 	$calendarStore = createDaysForCurrentMonthCalendar(
-		// 		selectedMonth.format('YYYY'),
-		// 		selectedMonth.format('MM')
-		// 	);
-		// 	return $calendarStore;
-		// });
+		calendarStore.update(($calendarStore: Record<string, any>[]) => {
+			$calendarStore = createDaysForCurrentMonthCalendar(
+				selectedMonth.format('YYYY'),
+				selectedMonth.format('MM')
+			);
+			return $calendarStore;
+		});
+		// SOLVED: Turns out INITIAL_MONTH was 'M' instead of "MM" format!
 		// = Use set()?
-		calendarStore.set(
-			createDaysForCurrentMonthCalendar(selectedMonth.format('YYYY'), selectedMonth.format('MM'))
-		);
+		// calendarStore.set(
+		// 	createDaysForCurrentMonthCalendar(selectedMonth.format('YYYY'), selectedMonth.format('MM'))
+		// );
 	}
 
 	function handleNextMonthSelected() {
 		selectedMonth = dayjs(selectedMonth).add(1, 'month');
-		console.log('handleNextMonthSelected::selectedMonth', selectedMonth);
+		// console.log('handleNextMonthSelected::selectedMonth', selectedMonth);
 		updateCalendar();
 	}
 
 	function handlePreviousMonthSelected() {
 		selectedMonth = dayjs(selectedMonth).subtract(1, 'month');
-		console.log('handlePreviousMonthSelected::selectedMonth', selectedMonth);
+		// console.log('handlePreviousMonthSelected::selectedMonth', selectedMonth);
 		updateCalendar();
 	}
 
 	function handleCurrentMonthSelected() {
 		selectedMonth = dayjs(new Date(now.year(), now.month(), 1));
-		console.log('handleCurrentMonthSelected::selectedMonth', selectedMonth);
+		// console.log('handleCurrentMonthSelected::selectedMonth', selectedMonth);
 		updateCalendar();
 	}
 

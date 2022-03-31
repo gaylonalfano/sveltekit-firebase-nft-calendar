@@ -1,5 +1,5 @@
 <script>
-	import { calendarStore } from '$lib/stores/calendar-store';
+	import { calendarStore, selectedDayStore } from '$lib/stores/calendar-store';
 
 	function updateSelectedDay() {
 		// console.log('Clicked!', e); // e.target is either <button> or <time>
@@ -18,7 +18,11 @@
 		// === Using new WRITABLE calendarStore instead of days
 		calendarStore.update(($calendarStore) => {
 			// Change previous isSelected to false
-			$calendarStore.find((day) => day.isSelected).isSelected = false;
+			// FIXME Need to check that we have a selectedDayStore value
+			// since after changing months, we should clear/reset selectedDayStore
+			if ($selectedDayStore) {
+				$calendarStore.find((day) => day.isSelected).isSelected = false;
+			}
 			// Update the clicked date to be the new isSelected
 			$calendarStore.find((day) => day.date === selectedDate).isSelected = true;
 			return $calendarStore;
@@ -27,10 +31,11 @@
 
 	$: {
 		console.log('CalendarGrid::calendarStore', $calendarStore);
+		console.log('CalendarGrid::selectedDayStore', $selectedDayStore);
 	}
 </script>
 
-<div class="isolate grid w-full grid-cols-7 grid-rows-6 gap-px">
+<div class="isolate grid w-full grid-cols-7 gap-px">
 	{#each $calendarStore as day (day.date)}
 		<!--
     Always include: "flex h-14 flex-col py-2 px-3 hover:bg-gray-100 focus:z-10"

@@ -18,7 +18,9 @@
 	}
 </script>
 
-<h1 class="text-3xl underline text-center py-4">NFT Mint</h1>
+<h1 class="text-3xl underline text-center py-4">
+	NFT Mint {$selectedDayStore ? $selectedDayStore.date : ''}
+</h1>
 
 <!-- This example requires Tailwind CSS v2.0+ -->
 <div class="max-w-screen-xl min-w-screen-sm">

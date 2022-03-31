@@ -38,7 +38,7 @@ import { writable, derived } from 'svelte/store';
 
 const TODAY: string = dayjs().format('YYYY-MM-DD');
 const INITIAL_YEAR: string = dayjs().format('YYYY');
-const INITIAL_MONTH: string = dayjs().format('M');
+const INITIAL_MONTH: string = dayjs().format('MM');
 
 const initialSelectedMonth: dayjs.Dayjs = dayjs(new Date(INITIAL_YEAR, INITIAL_MONTH - 1, 1));
 console.log('calendar-store.ts::initialSelectedMonth', initialSelectedMonth);
@@ -50,7 +50,7 @@ function getNumberOfDaysInMonth(year: string, month: string): number {
 	return dayjs(`${year}-${month}-01`).daysInMonth();
 }
 
-function addDummyProjectsData(calendar: Record<string, any>[]) {
+function addDummyProjectsData(calendar: Record<string, any>[]): void {
 	const dummyDates = ['2022-03-03', '2022-03-07', '2022-03-12', '2022-03-22', '2022-04-03'];
 	const dummyProjects = [
 		{ id: 1, name: 'Design review', time: '10AM', datetime: '2022-03-03T10:00', href: '#' },
@@ -179,11 +179,6 @@ function createFillerDaysForNextMonth(year: string, month: string): Record<strin
 	});
 }
 
-// TODO Could I pass $selectedMonthStore.format("YYYY") and $selectedMonthStore.format("M")
-// as the args to this? Thinking of using a derived store... like, the calendarStore
-// is derived from the selectedMonthStore somehow. Would need to initialize the
-// selectedMonthStore store here first, though. I mean, I am using Svelte, so why
-// not use Stores?
 export function createDaysForCurrentMonthCalendar(
 	year: string = INITIAL_YEAR,
 	month: string = INITIAL_MONTH
@@ -192,6 +187,8 @@ export function createDaysForCurrentMonthCalendar(
 	// so that I can convert into a Store. May still be a use case for using derived Stores
 	// to track previousMonth/nextMonth, but we'll see.
 	console.log(`EXECUTING createDaysForCurrentMonthCalendar::${year}::${month}`);
+	// console.log(`INITIAL_YEAR: ${INITIAL_YEAR}`);
+	// console.log(`INITIAL_MONTH: ${INITIAL_MONTH}`);
 	currentMonthDays = createDaysForCurrentMonth(year, month);
 	previousMonthFillerDays = createFillerDaysForPreviousMonth(year, month);
 	nextMonthFillerDays = createFillerDaysForNextMonth(year, month);
@@ -202,17 +199,13 @@ export function createDaysForCurrentMonthCalendar(
 		...nextMonthFillerDays
 	];
 
-	// Add some dummy data for now
-	addDummyProjectsData(currentMonthCalendarDays);
+	// Add some dummy data for now on initialization
+	if (year === INITIAL_YEAR && month === INITIAL_MONTH) {
+		addDummyProjectsData(currentMonthCalendarDays);
+	}
 
 	return currentMonthCalendarDays;
 }
-
-// UPDATE: May just handle this directly in the CalendarGrid.svelte component
-// function initializeMonthSelectors() {
-// 	// Allow user to navigate between different months and recreate
-// 	// the new currentMonthCalendarDays view, etc.
-// }
 
 export const selectedMonthStore = writable(initialSelectedMonth);
 // NOTE If it's simply currentMonthDays, then it does NOT include filler days

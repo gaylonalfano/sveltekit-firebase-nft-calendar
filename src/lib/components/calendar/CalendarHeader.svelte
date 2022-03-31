@@ -13,7 +13,7 @@
 	const now: dayjs.Dayjs = dayjs();
 	const TODAY: string = dayjs().format('YYYY-MM-DD');
 	const INITIAL_YEAR: string = dayjs().format('YYYY');
-	const INITIAL_MONTH: string = dayjs().format('M');
+	const INITIAL_MONTH: string = dayjs().format('MM');
 	let selectedMonth: dayjs.Dayjs = dayjs(new Date(now.year(), now.month(), 1));
 	// let selectedMonth: dayjs.Dayjs = dayjs(new Date(INITIAL_YEAR, INITIAL_MONTH - 1, 1));
 

@@ -40,7 +40,8 @@ const TODAY: string = dayjs().format('YYYY-MM-DD');
 const INITIAL_YEAR: string = dayjs().format('YYYY');
 const INITIAL_MONTH: string = dayjs().format('M');
 
-const selectedMonth: dayjs.Dayjs = dayjs(new Date(INITIAL_YEAR, INITIAL_MONTH - 1, 1));
+const initialSelectedMonth: dayjs.Dayjs = dayjs(new Date(INITIAL_YEAR, INITIAL_MONTH - 1, 1));
+console.log('calendar-store.ts::initialSelectedMonth', initialSelectedMonth);
 let currentMonthDays: Record<string, any>[];
 let previousMonthFillerDays: Record<string, any>[];
 let nextMonthFillerDays: Record<string, any>[];
@@ -101,6 +102,7 @@ function getWeekday(date: string): number {
 
 function createDaysForCurrentMonth(year: string, month: string): Record<string, any>[] {
 	// Return an Array of single Day objects
+	console.log(`EXECUTING createDaysForCurrentMonth::${year}::${month}`);
 	return [...Array(getNumberOfDaysInMonth(year, month))].map((day, index) => {
 		// Return the Day objects we want to work with
 		return {
@@ -116,6 +118,7 @@ function createDaysForCurrentMonth(year: string, month: string): Record<string, 
 }
 
 function createFillerDaysForPreviousMonth(year: string, month: string): Record<string, any>[] {
+	console.log(`EXECUTING createFillerDaysForPreviousMonth::${year}::${month}`);
 	const firstDayOfTheCurrentMonthWeekday: number = getWeekday(currentMonthDays[0].date);
 	const previousMonth: dayjs.Dayjs = dayjs(`${year}-${month}-01`).subtract(1, 'month'); // Cloned Dayjs object
 
@@ -150,6 +153,7 @@ function createFillerDaysForPreviousMonth(year: string, month: string): Record<s
 }
 
 function createFillerDaysForNextMonth(year: string, month: string): Record<string, any>[] {
+	console.log(`EXECUTING createFillerDaysForNextMonth::${year}::${month}`);
 	const lastDayOfTheCurrentMonthWeekday: number = getWeekday(
 		`${year}-${month}-${currentMonthDays.length}`
 	); // 0 = Sunday, 6 = Saturday
@@ -180,13 +184,14 @@ function createFillerDaysForNextMonth(year: string, month: string): Record<strin
 // is derived from the selectedMonthStore somehow. Would need to initialize the
 // selectedMonthStore store here first, though. I mean, I am using Svelte, so why
 // not use Stores?
-export function createCurrentMonthCalendarDays(
+export function createDaysForCurrentMonthCalendar(
 	year: string = INITIAL_YEAR,
 	month: string = INITIAL_MONTH
 ): Record<string, any>[] {
 	// TODO Need to create a flexible function that recreates the 'currentMonthCalendarDays' Array
 	// so that I can convert into a Store. May still be a use case for using derived Stores
 	// to track previousMonth/nextMonth, but we'll see.
+	console.log(`EXECUTING createDaysForCurrentMonthCalendar::${year}::${month}`);
 	currentMonthDays = createDaysForCurrentMonth(year, month);
 	previousMonthFillerDays = createFillerDaysForPreviousMonth(year, month);
 	nextMonthFillerDays = createFillerDaysForNextMonth(year, month);
@@ -209,14 +214,19 @@ export function createCurrentMonthCalendarDays(
 // 	// the new currentMonthCalendarDays view, etc.
 // }
 
-export const selectedMonthStore = writable(selectedMonth);
+export const selectedMonthStore = writable(initialSelectedMonth);
 // NOTE If it's simply currentMonthDays, then it does NOT include filler days
 export const calendarStore = writable(
-	// createCurrentMonthCalendarDays(
+	// === Using a store selectedMonthStore
+	// createDaysForCurrentMonthCalendar(
 	// 	$selectedMonthStore.format('YYYY'), // Error: Cannot find $selectedMonthStore
 	// 	$selectedMonthStore.format('MM') // Error: Cannot find $selectedMonthStore
 	// )
-	createCurrentMonthCalendarDays(selectedMonth.format('YYYY'), selectedMonth.format('MM'))
+	// === No Store, just a initialSelectedMonth variable
+	createDaysForCurrentMonthCalendar(
+		initialSelectedMonth.format('YYYY'),
+		initialSelectedMonth.format('MM')
+	)
 );
 
 // FIXME
@@ -226,7 +236,7 @@ export const calendarStore = writable(
 // calendarStore whenever we selected a new day??? The month is already
 // rendered. But how would I update day.isSelected?
 // export const calendarStore = derived(selectedMonthStore, ($selectedMonthStore) => {
-// 	return createCurrentMonthCalendarDays(
+// 	return createDaysForCurrentMonthCalendar(
 // 		$selectedMonthStore.format('YYYY'),
 // 		$selectedMonthStore.format('M')
 // 	);
@@ -234,19 +244,19 @@ export const calendarStore = writable(
 
 // Q: What if I try to create a CUSTOM store function?
 // https://svelte.dev/tutorial/custom-stores
-function createCalendarStore() {
+function createCustomCalendarStore() {
 	const { subscribe, update } = writable([]);
 
 	return {
 		subscribe,
 		updateCalendar: (selectedMonth: dayjs.Dayjs) =>
 			update(() =>
-				createCurrentMonthCalendarDays(selectedMonth.format('YYYY'), selectedMonth.format('MM'))
+				createDaysForCurrentMonthCalendar(selectedMonth.format('YYYY'), selectedMonth.format('MM'))
 			)
 	};
 }
 
-export const customCalendarStore = createCalendarStore();
+export const customCalendarStore = createCustomCalendarStore();
 
 export const selectedDayStore = derived(calendarStore, ($calendarStore) =>
 	$calendarStore.find((day) => day.isSelected)

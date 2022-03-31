@@ -1,16 +1,5 @@
 <script>
-	import dayjs from 'dayjs';
-	import { calendarStore, createCurrentMonthCalendarDays } from '$lib/stores/calendar-store';
-
-	let selectedMonth;
-
-	// Q: Can/should I build the initializeMonthSelectors() function here
-	// or inside the calendar-store.ts file?
-	function initializeMonthSelectors() {
-		// Select the previous/next month buttons
-		// On click need to update the selectedMonthStore...???
-		// I'm leaning toward keeping it all inside the store file...
-	}
+	import { calendarStore } from '$lib/stores/calendar-store';
 
 	function updateSelectedDay() {
 		// console.log('Clicked!', e); // e.target is either <button> or <time>
@@ -36,17 +25,8 @@
 		});
 	}
 
-	function updateCalendar() {
-		// Maybe need to trigger a calendarStore.update() based on new selectedMonth???
-		selectedMonth = dayjs(selectedMonth).subtract(1, 'month');
-		// Update the calendarStore
-		calendarStore.update((calendarStore) => {
-			calendarStore = createCurrentMonthCalendarDays(
-				selectedMonth.format('YYYY'),
-				selectedMonth.format('MM')
-			);
-			return calendarStore;
-		});
+	$: {
+		console.log('CalendarGrid::calendarStore', $calendarStore);
 	}
 </script>
 

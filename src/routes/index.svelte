@@ -1,12 +1,7 @@
 <script lang="ts">
 	// NOTE Great calendar example:
 	// https://codesandbox.io/s/monthly-calendar-ur29q?file=/src/index.js */
-	import {
-		calendarStore,
-		selectedDayStore
-		// currentMonthStore,
-		// previousMonthStore
-	} from '$lib/stores/calendar-store';
+	import { calendarStore, selectedDayStore } from '$lib/stores/calendar-store';
 	import CalendarHeader from '$lib/components/calendar/CalendarHeader.svelte';
 	import CalendarWeekdayHeader from '$lib/components/calendar/CalendarWeekdayHeader.svelte';
 	import CalendarGrid from '$lib/components/calendar/CalendarGrid.svelte';
@@ -18,13 +13,12 @@
 	// $: selectedDay = $days.find((day) => day.isSelected); // Works
 	// let selectedDay = $days.find((day) => day.isSelected); // Doesn't update!
 	$: today = new Date();
-	// $: {
-	// 	console.log({ $currentMonthStore });
-	// 	console.log({ $previousMonthStore });
-	// }
+	$: {
+		console.log('index::calendarStore', $calendarStore);
+	}
 </script>
 
-<h1 class="text-3xl underline text-center py-4">NFT Mint calendarStore</h1>
+<h1 class="text-3xl underline text-center py-4">NFT Mint {$selectedDayStore.date}</h1>
 
 <!-- This example requires Tailwind CSS v2.0+ -->
 <div class="max-w-screen-xl min-w-screen-sm">

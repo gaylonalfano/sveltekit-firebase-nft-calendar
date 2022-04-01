@@ -41,7 +41,7 @@ const INITIAL_YEAR: string = dayjs().format('YYYY');
 const INITIAL_MONTH: string = dayjs().format('MM');
 
 const initialSelectedMonth: dayjs.Dayjs = dayjs(new Date(INITIAL_YEAR, INITIAL_MONTH - 1, 1));
-console.log('calendar-store.ts::initialSelectedMonth', initialSelectedMonth);
+// console.log('calendar-store.ts::initialSelectedMonth', initialSelectedMonth);
 let currentMonthDays: Record<string, any>[];
 let previousMonthFillerDays: Record<string, any>[];
 let nextMonthFillerDays: Record<string, any>[];
@@ -102,7 +102,7 @@ function getWeekday(date: string): number {
 
 function createDaysForCurrentMonth(year: string, month: string): Record<string, any>[] {
 	// Return an Array of single Day objects
-	console.log(`EXECUTING createDaysForCurrentMonth::${year}::${month}`);
+	// console.log(`EXECUTING createDaysForCurrentMonth::${year}::${month}`);
 	return [...Array(getNumberOfDaysInMonth(year, month))].map((day, index) => {
 		// Return the Day objects we want to work with
 		return {
@@ -118,7 +118,7 @@ function createDaysForCurrentMonth(year: string, month: string): Record<string, 
 }
 
 function createFillerDaysForPreviousMonth(year: string, month: string): Record<string, any>[] {
-	console.log(`EXECUTING createFillerDaysForPreviousMonth::${year}::${month}`);
+	// console.log(`EXECUTING createFillerDaysForPreviousMonth::${year}::${month}`);
 	const firstDayOfTheCurrentMonthWeekday: number = getWeekday(currentMonthDays[0].date);
 	const previousMonth: dayjs.Dayjs = dayjs(`${year}-${month}-01`).subtract(1, 'month'); // Cloned Dayjs object
 
@@ -153,7 +153,7 @@ function createFillerDaysForPreviousMonth(year: string, month: string): Record<s
 }
 
 function createFillerDaysForNextMonth(year: string, month: string): Record<string, any>[] {
-	console.log(`EXECUTING createFillerDaysForNextMonth::${year}::${month}`);
+	// console.log(`EXECUTING createFillerDaysForNextMonth::${year}::${month}`);
 	const lastDayOfTheCurrentMonthWeekday: number = getWeekday(
 		`${year}-${month}-${currentMonthDays.length}`
 	); // 0 = Sunday, 6 = Saturday
@@ -186,7 +186,7 @@ export function createDaysForCurrentMonthCalendar(
 	// TODO Need to create a flexible function that recreates the 'currentMonthCalendarDays' Array
 	// so that I can convert into a Store. May still be a use case for using derived Stores
 	// to track previousMonth/nextMonth, but we'll see.
-	console.log(`EXECUTING createDaysForCurrentMonthCalendar::${year}::${month}`);
+	// console.log(`EXECUTING createDaysForCurrentMonthCalendar::${year}::${month}`);
 	// console.log(`INITIAL_YEAR: ${INITIAL_YEAR}`);
 	// console.log(`INITIAL_MONTH: ${INITIAL_MONTH}`);
 	currentMonthDays = createDaysForCurrentMonth(year, month);
@@ -200,6 +200,10 @@ export function createDaysForCurrentMonthCalendar(
 	];
 
 	// Add some dummy data for now on initialization
+	// TODO When we add Firebase, need to make sure it continues to add
+	// projects correctly, rather than wiping out.
+	// E.g. April shows May 1 project. Change to May calendar, May 1 project
+	// still displays rather than getting wiped.
 	if (year === INITIAL_YEAR && month === INITIAL_MONTH) {
 		addDummyProjectsData(currentMonthCalendarDays);
 	}

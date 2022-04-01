@@ -29,10 +29,10 @@
 		});
 	}
 
-	$: {
-		console.log('CalendarGrid::calendarStore', $calendarStore);
-		console.log('CalendarGrid::selectedDayStore', $selectedDayStore);
-	}
+	// $: {
+	// 	console.log('CalendarGrid::calendarStore', $calendarStore);
+	// 	console.log('CalendarGrid::selectedDayStore', $selectedDayStore);
+	// }
 </script>
 
 <div class="isolate grid w-full grid-cols-7 gap-px">

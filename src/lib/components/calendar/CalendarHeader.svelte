@@ -3,7 +3,11 @@
 	import AddProjectForm from '$lib/components/projects/AddProjectForm.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { showModalStore } from '$lib/stores/modal-store';
-	import { calendarStore, createDaysForCurrentMonthCalendar } from '$lib/stores/calendar-store';
+	import {
+		calendarStore,
+		createDaysForCurrentMonthCalendar,
+		selectedDayStore
+	} from '$lib/stores/calendar-store';
 
 	let showMenu = false;
 	// Initialize modal state and content
@@ -73,7 +77,6 @@
 		selectedMonth = dayjs(selectedMonth).subtract(1, 'month');
 		// Update calendarStore based on new selectedMonth
 		updateCalendar();
-		// TODO Update isSelected to be true for today
 	}
 
 	function handleCurrentMonthSelected() {
@@ -83,16 +86,22 @@
 	}
 
 	function handleTodaySelected() {
-		selectedMonth = dayjs(new Date(now.year(), now.month(), 1));
-		updateCalendar();
+		handleCurrentMonthSelected();
+		calendarStore.update(($calendarStore) => {
+			if ($selectedDayStore) {
+				$calendarStore.find((day) => day.isSelected).isSelected = false;
+			}
+			$calendarStore.find((day) => day.date === now.format('YYYY-MM-DD')).isSelected = true;
+			return $calendarStore;
+		});
 	}
 
-	$: {
-		console.log('now', now);
-		console.log('showModalStore?', $showModalStore);
-		console.log('selectedMonth', selectedMonth);
-		console.log('CalendarHeader::calendarStore', $calendarStore);
-	}
+	// $: {
+	// 	console.log('now', now);
+	// 	console.log('showModalStore?', $showModalStore);
+	// 	console.log('selectedMonth', selectedMonth);
+	// 	console.log('CalendarHeader::calendarStore', $calendarStore);
+	// }
 </script>
 
 <header
@@ -127,7 +136,7 @@
 			<button
 				type="button"
 				class="hidden border-t border-b border-gray-300 bg-white px-3.5 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-gray-900 focus:relative md:block"
-				on:click={handleCurrentMonthSelected}>Today</button
+				on:click={handleTodaySelected}>Today</button
 			>
 			<span class="relative -mx-px h-5 w-px bg-gray-300 md:hidden" />
 			<button

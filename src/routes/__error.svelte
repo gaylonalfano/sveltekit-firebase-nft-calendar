@@ -2,18 +2,18 @@
 	export async function load({ error, status }) {
 		return {
 			props: {
-				errorMessage: `${status}: ${error.message}`
+				message: `${status}: ${error.message}`
 			}
 		};
 	}
 </script>
 
 <script>
-	export let errorMessage;
+	export let message;
 </script>
 
 <h1>Something happened...</h1>
-<h2>{errorMessage}</h2>
+<h2>{message}</h2>
 <p>
 	<strong>NOTE:</strong>The status and error that this __error.svelte renders comes directly from
 	our [slug].svelte file inside the catch(e) code block. Specifically, our [slug].svelte component

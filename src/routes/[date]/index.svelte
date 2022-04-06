@@ -37,6 +37,5 @@
 </script>
 
 <h1>~/[date]</h1>
-<p>This should list all projects for this individual date.</p>
 <h2>{url}</h2>
 <h2>{date}</h2>

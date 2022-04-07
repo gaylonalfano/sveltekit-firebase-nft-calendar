@@ -12,7 +12,6 @@
 	export let message;
 </script>
 
-<h1>Something happened...</h1>
 <h2>{message}</h2>
 <p>
 	<strong>NOTE:</strong>The status and error that this __error.svelte renders comes directly from

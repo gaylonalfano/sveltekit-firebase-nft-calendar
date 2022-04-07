@@ -25,7 +25,7 @@
 			// load({error, status}) function!
 			return {
 				status: 404,
-				error: 'Date not found'
+				error: 'Date (YYYY-MM-DD) not found'
 			};
 		}
 	}

@@ -36,8 +36,8 @@
 	export let url;
 	export let date;
 
-	// const day = $calendarStore.filter((d) => d.date === $selectedDayStore.date)[0];
-	const day = $calendarStore.filter((d) => d.date === '2022-04-22')[0];
+	const day = $calendarStore.filter((d) => d.date === $selectedDayStore.date)[0];
+	// const day = $calendarStore.filter((d) => d.date === '2022-04-22')[0];
 	const projects = day.projects;
 	console.log('day:', day);
 	console.log('projects:', projects);

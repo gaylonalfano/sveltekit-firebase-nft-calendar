@@ -15,6 +15,7 @@
 	$: today = new Date();
 	$: {
 		console.log('index::calendarStore', $calendarStore);
+		console.log('index::selectedDayStore', $selectedDayStore);
 	}
 </script>
 
@@ -60,7 +61,7 @@
 								</time>
 							</div>
 							<a
-								href={project.href}
+								href={`${project.datetime.slice(0, 10)}/projects/${project.id}`}
 								class="ml-6 flex-none self-center rounded-md border border-gray-300 bg-white py-2 px-3 font-semibold text-gray-700 opacity-0 shadow-sm hover:bg-gray-50 focus:opacity-100 group-hover:opacity-100"
 								>Edit<span class="sr-only">, {project.name}</span></a
 							>

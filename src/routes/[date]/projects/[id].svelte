@@ -13,16 +13,16 @@
 <script lang="ts">
 	import { calendarStore, selectedDayStore } from '$lib/stores/calendar-store';
 	export let projectId: string;
-	export let url: string;
+	// export let url: string;
 	export let date: string;
 
 	const day = $calendarStore.filter((d) => d.date === date)[0];
 	// const day = $calendarStore.filter((d) => d.date === '2022-04-22')[0];
 	const project = day.projects.find((p) => p.id === +projectId);
-	console.log(url);
-	console.log(date);
-	console.log({ day });
-	console.log({ project });
+	// console.log(url);
+	// console.log(date);
+	// console.log(day);
+	console.log(project);
 </script>
 
 <main class="max-w-7xl mx-auto px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
@@ -44,6 +44,7 @@
 			>
 		</div>
 	</div>
+	<!-- Stats -->
 	<div class="stats shadow">
 		<div class="stat">
 			<div class="stat-figure text-primary">
@@ -60,9 +61,9 @@
 					/></svg
 				>
 			</div>
-			<div class="stat-title">Total Likes</div>
-			<div class="stat-value text-primary">25.6K</div>
-			<div class="stat-desc">21% more than last month</div>
+			<div class="stat-title">Total Supply</div>
+			<div class="stat-value text-primary">{project.supply}</div>
+			<div class="stat-desc">Additional text</div>
 		</div>
 
 		<div class="stat">
@@ -80,25 +81,35 @@
 					/></svg
 				>
 			</div>
-			<div class="stat-title">Page Views</div>
-			<div class="stat-value text-secondary">2.6M</div>
-			<div class="stat-desc">21% more than last month</div>
+			<div class="stat-title">Mint Price</div>
+			<div class="stat-value text-secondary">{project.price} {project.coin}</div>
+			<div class="stat-desc">Current SOL:USD rate</div>
 		</div>
 
 		<div class="stat">
 			<div class="stat-figure text-secondary">
-				<div class="avatar online">
-					<div class="w-16 rounded-full">
-						<img src="https://api.lorem.space/image/face?w=128&h=128" />
-					</div>
-				</div>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					class="inline-block w-8 h-8 stroke-current"
+					><path
+						stroke-linecap="round"
+						stroke-linejoin="round"
+						stroke-width="2"
+						d="M13 10V3L4 14h7v7l9-11h-7z"
+					/></svg
+				>
 			</div>
-			<div class="stat-value">86%</div>
-			<div class="stat-title">Tasks done</div>
-			<div class="stat-desc text-secondary">31 tasks remaining</div>
+			<div class="stat-title">Wagmi?</div>
+			<div class="stat-value">
+				<span class="text-accent-focus">67%</span> <span class="text-primary-focus">33%</span>
+			</div>
+			<div class="stat-desc">Bullishness metric</div>
 		</div>
 	</div>
 
+	<!-- Project Details -->
 	<section aria-labelledby="products-heading" class="mt-8">
 		<h2 id="products-heading" class="sr-only">Products purchased</h2>
 
@@ -119,12 +130,10 @@
 					<h3 class="text-lg font-medium text-gray-900">
 						<a href="#">{project.name}</a>
 					</h3>
-					<p class="font-medium text-gray-900 mt-1">$36.00</p>
-					<p class="text-gray-500 mt-3">
-						You awake in a new, mysterious land. Mist hangs low along the distant mountains. What
-						does it mean?
-					</p>
+					<p class="font-medium text-gray-900 mt-1">{project.price} {project.coin}</p>
+					<p class="text-gray-500 mt-3">{project.details}</p>
 				</div>
+				<!-- Details -->
 				<div class="sm:col-span-12 md:col-span-7">
 					<dl class="grid grid-cols-1 gap-y-8 py-8  sm:grid-cols-2 sm:gap-x-6 sm:py-6 md:py-10">
 						<div>
@@ -136,10 +145,11 @@
 							</dd>
 						</div>
 						<div>
-							<dt class="font-medium text-gray-900">Shipping updates</dt>
+							<dt class="font-medium text-gray-900">Info</dt>
 							<dd class="mt-3 text-gray-500 space-y-3">
-								<p>f•••@example.com</p>
-								<p>1•••••••••40</p>
+								<p>{project.website}</p>
+								<p>{project.twitter}</p>
+								<p>{project.discord}</p>
 								<button type="button" class="font-medium text-indigo-600 hover:text-indigo-500"
 									>Edit</button
 								>

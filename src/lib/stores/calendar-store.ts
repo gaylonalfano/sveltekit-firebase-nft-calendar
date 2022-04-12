@@ -51,16 +51,83 @@ function getNumberOfDaysInMonth(year: string, month: string): number {
 }
 
 function addDummyProjectsData(calendar: Record<string, any>[]): void {
+	// let formValidation = {
+	// 	name: false,
+	// 	hour: false,
+	// 	min: false,
+	// 	timezone: false,
+	// 	discord: false,
+	// 	twitter: false,
+	// 	website: false,
+	// 	supply: false,
+	// 	coin: false,
+	// 	price: false,
+	// 	details: false
+	// };
 	const dummyDates = ['2022-04-03', '2022-04-07', '2022-04-12', '2022-04-22', '2022-05-01'];
 	const dummyProjects = [
-		{ id: 1, name: 'Design review', time: '10AM', datetime: '2022-04-03T10:00', href: '#' },
-		{ id: 2, name: 'Sales meeting', time: '2PM', datetime: '2022-04-03T14:00', href: '#' },
-		{ id: 3, name: 'Date night', time: '6PM', datetime: '2022-04-08T18:00', href: '#' },
+		{
+			id: 1,
+			name: 'Design review',
+			time: '10AM',
+			datetime: '2022-04-03T10:00',
+			timezone: 'UTC',
+			discord: 'discord.gg/name',
+			twitter: '@twittername',
+			website: 'www.website.com',
+			supply: '4000',
+			coin: 'SOL',
+			price: '2',
+			details:
+				'X Project is here to change the NFT space! Come join this crazy crew with an extensive roadmap, which includes staking, breeding, and play-to-earn mechanics. Loot loot!',
+			href: '#'
+		},
+		{
+			id: 2,
+			name: 'Sales meeting',
+			time: '2PM',
+			datetime: '2022-04-03T14:00',
+			timezone: 'UTC',
+			discord: 'discord.gg/name',
+			twitter: '@twittername',
+			website: 'www.website.com',
+			supply: '4000',
+			coin: 'SOL',
+			price: '2',
+			details:
+				'X Project is here to change the NFT space! Come join this crazy crew with an extensive roadmap, which includes staking, breeding, and play-to-earn mechanics. Loot loot!',
+			href: '#'
+		},
+		{
+			id: 3,
+			name: 'Date night',
+			time: '6PM',
+			datetime: '2022-04-08T18:00',
+			timezone: 'UTC',
+			discord: 'discord.gg/name',
+			twitter: '@twittername',
+			website: 'www.website.com',
+			supply: '4000',
+			coin: 'SOL',
+			price: '2',
+			details:
+				'X Project is here to change the NFT space! Come join this crazy crew with an extensive roadmap, which includes staking, breeding, and play-to-earn mechanics. Loot loot!',
+			href: '#'
+		},
 		{
 			id: 6,
 			name: "Sam's birthday party",
 			time: '2PM',
 			datetime: '2022-04-25T14:00',
+			timezone: 'UTC',
+			discord: 'discord.gg/name',
+			twitter: '@twittername',
+			website: 'www.website.com',
+			supply: '4000',
+			coin: 'SOL',
+			price: '2',
+			details:
+				'X Project is here to change the NFT space! Come join this crazy crew with an extensive roadmap, which includes staking, breeding, and play-to-earn mechanics. Loot loot!',
 			href: '#'
 		},
 		{
@@ -68,16 +135,79 @@ function addDummyProjectsData(calendar: Record<string, any>[]): void {
 			name: 'Maple syrup museum',
 			time: '3PM',
 			datetime: '2022-04-22T15:00',
+			timezone: 'UTC',
+			discord: 'discord.gg/name',
+			twitter: '@twittername',
+			website: 'www.website.com',
+			supply: '4000',
+			coin: 'SOL',
+			price: '2',
+			details:
+				'X Project is here to change the NFT space! Come join this crazy crew with an extensive roadmap, which includes staking, breeding, and play-to-earn mechanics. Loot loot!',
 			href: '#'
 		},
-		{ id: 5, name: 'Hockey game', time: '7PM', datetime: '2022-04-22T19:00', href: '#' },
-		{ id: 8, name: 'Go looting', time: '8PM', datetime: '2022-04-22T20:00', href: '#' },
-		{ id: 9, name: 'Read Expanse', time: '9PM', datetime: '2022-04-22T21:00', href: '#' },
+		{
+			id: 5,
+			name: 'Hockey game',
+			time: '7PM',
+			datetime: '2022-04-22T19:00',
+			timezone: 'UTC',
+			discord: 'discord.gg/name',
+			twitter: '@twittername',
+			website: 'www.website.com',
+			supply: '4000',
+			coin: 'SOL',
+			price: '2',
+			details:
+				'X Project is here to change the NFT space! Come join this crazy crew with an extensive roadmap, which includes staking, breeding, and play-to-earn mechanics. Loot loot!',
+			href: '#'
+		},
+		{
+			id: 8,
+			name: 'Go looting',
+			time: '8PM',
+			datetime: '2022-04-22T20:00',
+			timezone: 'UTC',
+			discord: 'discord.gg/name',
+			twitter: '@twittername',
+			website: 'www.website.com',
+			supply: '4000',
+			coin: 'SOL',
+			price: '2',
+			details:
+				'X Project is here to change the NFT space! Come join this crazy crew with an extensive roadmap, which includes staking, breeding, and play-to-earn mechanics. Loot loot!',
+			href: '#'
+		},
+		{
+			id: 9,
+			name: 'Read Expanse',
+			time: '9PM',
+			datetime: '2022-04-22T21:00',
+			timezone: 'UTC',
+			discord: 'discord.gg/name',
+			twitter: '@twittername',
+			website: 'www.website.com',
+			supply: '4000',
+			coin: 'SOL',
+			price: '2',
+			details:
+				'X Project is here to change the NFT space! Come join this crazy crew with an extensive roadmap, which includes staking, breeding, and play-to-earn mechanics. Loot loot!',
+			href: '#'
+		},
 		{
 			id: 7,
 			name: 'Cinema with friends',
 			time: '9PM',
 			datetime: '2022-05-01T21:00',
+			timezone: 'UTC',
+			discord: 'discord.gg/name',
+			twitter: '@twittername',
+			website: 'www.website.com',
+			supply: '4000',
+			coin: 'SOL',
+			price: '2',
+			details:
+				'X Project is here to change the NFT space! Come join this crazy crew with an extensive roadmap, which includes staking, breeding, and play-to-earn mechanics. Loot loot!',
 			href: '#'
 		}
 	];

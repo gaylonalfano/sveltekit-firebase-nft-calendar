@@ -25,8 +25,8 @@
 	console.log(project);
 </script>
 
-<main class="max-w-7xl mx-auto px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-	<h1 class="text-3xl font-extrabold tracking-tight text-gray-900">Project Details</h1>
+<div class="project-details">
+	<h1 class="text-3xl font-bold pt-4">Project Details</h1>
 
 	<div class="text-sm mt-2 pb-5 sm:flex sm:justify-between">
 		<dl class="flex">
@@ -39,9 +39,7 @@
 			<dd class="font-medium text-gray-900"><time datetime="2021-03-22">{date}</time></dd>
 		</dl>
 		<div class="mt-4 sm:mt-0">
-			<a href="/" class="font-medium text-indigo-600 hover:text-indigo-500"
-				>Back<span aria-hidden="true"> &rarr;</span></a
-			>
+			<a href="/" class="btn-link">Back<span aria-hidden="true"> &rarr;</span></a>
 		</div>
 	</div>
 	<!-- Stats -->
@@ -225,4 +223,4 @@
 			</dl>
 		</div>
 	</section>
-</main>
+</div>

@@ -107,7 +107,7 @@
 <header
 	class="relative z-20 flex items-center justify-between border-b border-gray-200 py-4 px-6 lg:flex-none"
 >
-	<h1 class="text-lg font-semibold text-gray-900">
+	<h1 class="text-xl font-bold">
 		<time datetime="2022-01">{selectedMonth.format('MMMM')} {selectedMonth.format('YYYY')}</time>
 	</h1>
 	<div class="flex items-center">

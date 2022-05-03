@@ -1,11 +1,11 @@
 <script context="module">
 	// Trying to hook up Firebase: https://youtu.be/s5iN0agY398?t=194
-	import { getProjects } from '$lib/firebase/db';
+	// import { getProjects } from '$lib/firebase/db';
 	import { getBooks } from '$lib/firebase/db';
 
 	export async function load() {
 		try {
-			const books = await getProjects();
+			const books = await getBooks();
 			console.log('load():books', books);
 
 			return {

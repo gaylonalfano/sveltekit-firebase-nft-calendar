@@ -20,6 +20,7 @@ export async function getProjects(): Promise<Record<string, any>[]> {
 }
 
 export async function getBooks(): Promise<Book[]> {
+	// NOTE Following https://youtu.be/s5iN0agY398
 	const { db } = initializeFirebaseAndGetFirestore();
 	const colRef = collection(db, 'books');
 	const snapshot = await getDocs(colRef);

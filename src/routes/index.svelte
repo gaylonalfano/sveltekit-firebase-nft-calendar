@@ -1,3 +1,26 @@
+<script context="module">
+	// Trying to hook up Firebase: https://youtu.be/s5iN0agY398?t=194
+	import { getProjects } from '../firebase/db';
+
+	export async function load() {
+		try {
+			const firestoreProjects = await getProjects();
+			console.log('load():firestoreProjects', firestoreProjects);
+
+			return {
+				props: {
+					firestoreProjects
+				}
+			};
+		} catch (e) {
+			return {
+				status: 500,
+				error: new Error('Error fetching data from Firebase')
+			};
+		}
+	}
+</script>
+
 <script lang="ts">
 	// NOTE Great calendar example:
 	// https://codesandbox.io/s/monthly-calendar-ur29q?file=/src/index.js */
@@ -5,6 +28,10 @@
 	import CalendarHeader from '$lib/components/calendar/CalendarHeader.svelte';
 	import CalendarWeekdayHeader from '$lib/components/calendar/CalendarWeekdayHeader.svelte';
 	import CalendarGrid from '$lib/components/calendar/CalendarGrid.svelte';
+
+	// Firebase data
+	export let firestoreProjects = [];
+	console.log('firestoreProjects:', firestoreProjects);
 
 	// Q: Do I need this to be reactive or just a variable?
 	// A: MUST be reactive! Simple variable won't react/update!
@@ -67,4 +94,10 @@
 			</div>
 		{/if}
 	</div>
+	FIREBASE STUFF
+	<ol>
+		{#each firestoreProjects as project}
+			<li>{project.id}</li>
+		{/each}
+	</ol>
 </div>

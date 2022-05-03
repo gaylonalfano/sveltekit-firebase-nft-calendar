@@ -6,3 +6,12 @@ export const firebaseConfig = {
 	messagingSenderId: '32575287263',
 	appId: '1:32575287263:web:48be293f2d499ef97e9e6a'
 };
+
+// // NOTE Shaun's version:
+// // init Firebase
+// initializeApp(firebaseConfig);
+
+// // init services
+// const db = getFirestore();
+
+// export { db }
